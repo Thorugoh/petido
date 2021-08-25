@@ -1,0 +1,12 @@
+{
+  "name": "petido",
+  "displayName": "petido",
+  "expo": {
+    "name": "petido",
+    "slug": "petido",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
