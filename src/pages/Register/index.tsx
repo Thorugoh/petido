@@ -1,71 +1,171 @@
 import React, { useState } from "react";
-import { Box, Heading, HStack, Pressable, Text } from "native-base";
 import { RegisterOption } from "../../components/RegisterOption";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Button, Title, useTheme, IconButton } from "react-native-paper";
+import { Image, View } from "react-native";
+import { CameraCapturedPicture } from "expo-camera";
+import {
+  Pet,
+  PetColor,
+  PetSituation,
+  PetSize,
+  usePetidoContext,
+} from "../../context/PetidoContext";
+import { useLocation } from "../../hooks/useLocation";
+import { useNavigation } from "@react-navigation/core";
+
 export function Register() {
-  const [size, setSize] = useState("");
-  const [color, setColor] = useState("");
-  const [situation, setSituation] = useState("");
+  // const [showCamera, setShowCamera] = useState(false);
+  const navigation = useNavigation();
+  const [photo, setPhoto] = useState<CameraCapturedPicture | null>(null);
+  const [size, setSize] = useState<PetSize>("small");
+  const [color, setColor] = useState<PetColor>("one");
+  const [situation, setSituation] = useState<PetSituation>("abandoned");
+  const { getCurrentPosition } = useLocation();
+
+  const { registerPet } = usePetidoContext();
+
+  const { colors } = useTheme();
+
+  const registerColorOptions = [
+    {
+      title: "1 cor",
+      key: "one",
+    },
+    {
+      title: "2 cor",
+      key: "two",
+    },
+    {
+      title: "3 cor",
+      key: "three",
+    },
+  ];
+
+  const registerSizeOptions = [
+    {
+      title: "Pequeno",
+      key: "small",
+    },
+    {
+      title: "Médio",
+      key: "medium",
+    },
+    {
+      title: "Grande",
+      key: "large",
+    },
+  ];
+
+  const registerSituationOptions = [
+    {
+      title: "Abandonado",
+      key: "abandoned",
+    },
+    {
+      title: "Perdido",
+      key: "lost",
+    },
+    {
+      title: "Machucado",
+      key: "bruised",
+    },
+  ];
+
+  function handleSavePhoto(capturedPhoto: CameraCapturedPicture) {
+    setPhoto(capturedPhoto);
+  }
+
+  function clearForm() {
+    setSize("small");
+    setColor("one");
+    setSituation("abandoned");
+    setPhoto(null);
+  }
+
+  async function handleRegisterPet() {
+    if (!size || !color || !situation || !photo) return;
+
+    const location = await getCurrentPosition();
+    if (!location) return;
+
+    const pet: Pet = {
+      size,
+      color,
+      situation,
+      photo: { uri: photo.uri, base64: photo.base64! },
+      location: {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      },
+    };
+
+    await registerPet(pet);
+    clearForm();
+  }
+
+  function showCamera() {
+    navigation.navigate("camera", { save: handleSavePhoto });
+  }
 
   return (
-    <Box px={4}>
-      <Heading color="amber.400">Registrar Animal</Heading>
+    <View style={{ flex: 1, paddingHorizontal: 16 }}>
+      <>
+        <Title style={{ color: colors.primary }}>Registrar</Title>
+        <View style={{ marginBottom: 40 }}>
+          <RegisterOption
+            getSelected={setSize as (opt: string) => void}
+            title="Porte:"
+            options={registerSizeOptions}
+          />
 
-      <RegisterOption
-        mt={4}
-        getSelected={setSize}
-        title="Porte:"
-        options={["pequeno", "medio", "grande"]}
-      />
+          <RegisterOption
+            getSelected={setColor as (opt: string) => void}
+            title="Cor:"
+            options={registerColorOptions}
+          />
 
-      <RegisterOption
-        mt={4}
-        getSelected={setColor}
-        title="Cor:"
-        options={["1 cor", "2 cores", "3 cores"]}
-      />
+          <RegisterOption
+            getSelected={setSituation as (opt: string) => void}
+            title="Situação:"
+            options={registerSituationOptions}
+          />
+        </View>
 
-      <RegisterOption
-        mt={4}
-        getSelected={setSituation}
-        title="Situação:"
-        options={["Abandonado", "Perdido", "Machucado"]}
-      />
+        <View
+          style={{
+            borderWidth: !photo ? 1 : undefined,
+            borderColor: colors.primary,
+            width: 60,
+            height: 60,
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 5,
+            marginBottom: 50,
+          }}
+        >
+          {!photo ? (
+            <IconButton
+              icon="camera"
+              size={40}
+              onPress={showCamera}
+              color={colors.primary}
+            />
+          ) : (
+            <Image
+              style={{ height: "100%", width: "100%", borderRadius: 5 }}
+              source={{ uri: photo.uri }}
+            />
+          )}
+        </View>
 
-      <Pressable
-        borderWidth={1}
-        alignSelf="center"
-        rounded={4}
-        mt={4}
-        w="50%"
-        p={1}
-        bg="gray.200"
-        borderColor="trueGray.400"
-      >
-        <HStack alignItems="center">
-          <Text fontSize="md" bold>
-            Enviar Foto:
-          </Text>
-          <MaterialIcons size={20} name="attach-file" />
-        </HStack>
-      </Pressable>
-
-      <Pressable
-        alignSelf="center"
-        rounded={4}
-        mt={20}
-        w={40}
-        h={30}
-        p={1}
-        bg="amber.500"
-      >
-        <HStack alignItems="center" justifyContent="center">
-          <MaterialIcons color="#FFF" size={20} name="check" />
-          <Text color="amber.100" ml={1} fontSize="md" bold>
-            Confirmar
-          </Text>
-        </HStack>
-      </Pressable>
-    </Box>
+        <Button
+          labelStyle={{ color: "#FFF" }}
+          mode="contained"
+          onPress={handleRegisterPet}
+        >
+          Confirmar
+        </Button>
+      </>
+    </View>
   );
 }

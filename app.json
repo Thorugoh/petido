@@ -2,9 +2,15 @@
   "name": "petido",
   "displayName": "petido",
   "expo": {
-    "name": "petido",
+    "name": "Petido",
     "slug": "petido",
+    "scheme": "petido",
     "version": "1.0.0",
+    "icon": "./resources/logo.png",
+    "splash": {
+      "image": "./resources/splash.png",
+      "backgroundColor": "#D84371"
+    },
     "assetBundlePatterns": [
       "**/*"
     ]

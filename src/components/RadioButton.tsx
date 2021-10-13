@@ -10,7 +10,7 @@ export function RadioButton({ options, selected }: Props) {
   return (
     <View>
       {options.map((option) => (
-        <TouchableOpacity>
+        <TouchableOpacity key={option} >
           <Text>{option}</Text>
         </TouchableOpacity>
       ))}

@@ -1,6 +1,7 @@
-import { Box, HStack, IBoxProps, Radio, Text, VStack } from "native-base";
 import React from "react";
 import { useState } from "react";
+import { View, StyleSheet } from "react-native";
+import { Text, RadioButton, useTheme } from 'react-native-paper';
 
 // type Props = {
 //   title: string;
@@ -9,9 +10,9 @@ import { useState } from "react";
 //   getSelected: (option: string) => void;
 // };
 
-interface Props extends Omit<IBoxProps, "children"> {
+interface Props {
   title: string;
-  options: string[];
+  options: { title: string, key: string }[];
   extraInfo?: string;
   getSelected: (option: string) => void;
 }
@@ -23,33 +24,40 @@ export function RegisterOption({
   getSelected,
   ...rest
 }: Props) {
-  const [value, setValue] = useState(options[0]);
+  const [value, setValue] = useState(options[0].key);
+  const { colors } = useTheme();
 
   return (
-    <Box p={4} borderWidth={1} borderColor="trueGray.400" rounded={5} {...rest}>
-      <VStack>
-        <Text fontSize="md" bold mb={4}>
-          {title}
-        </Text>
+    <View style={{ ...styles.container, marginTop: 16, }} >
+      <Text style={{ marginBottom: 4 }}>
+        {title}
+      </Text>
 
-        <Radio.Group
-          name=""
-          value={value}
-          onChange={(nextValue) => {
-            setValue(nextValue);
-            getSelected(nextValue);
-          }}
-          colorScheme="amber"
-        >
-          <HStack>
-            {options.map((option) => (
-              <Radio key={option} value={option} mr={1}>
-                {option}
-              </Radio>
-            ))}
-          </HStack>
-        </Radio.Group>
-      </VStack>
-    </Box>
+      <RadioButton.Group
+        onValueChange={(nextValue) => {
+          setValue(nextValue);
+          getSelected(nextValue);
+        }}
+        value={value}
+      >
+        <View style={{ flexDirection: "row" }}>
+          {options.map((option) => (
+            <View key={option.key} style={{ alignItems: "center", flexDirection: "row" }}>
+              <RadioButton color={colors.primary} value={option.key} />
+              <Text>{option.title}</Text>
+            </View>
+          ))}
+        </View>
+
+      </RadioButton.Group>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 8,
+    borderWidth: 1,
+    borderRadius: 5,
+  }
+})

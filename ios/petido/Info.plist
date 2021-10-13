@@ -22,6 +22,10 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Este app requer o acesso a sua câmera para cadastrar novos pets.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Este app requer o acesso a sua câmera para cadastrar novos pets.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
