@@ -43,8 +43,6 @@ function Camera({ route }) {
   };
 
   useEffect(() => {
-    console.log("useEffect");
-
     (async () => {
       const { status } = await ExpoCamera.requestPermissionsAsync();
       setHasPermission(status === "granted");
