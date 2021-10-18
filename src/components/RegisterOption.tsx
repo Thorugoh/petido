@@ -3,13 +3,6 @@ import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Text, RadioButton, useTheme } from "react-native-paper";
 
-// type Props = {
-//   title: string;
-//   options: string[];
-//   extraInfo?: string;
-//   getSelected: (option: string) => void;
-// };
-
 interface Props {
   title: string;
   options: { title: string; key: string }[];

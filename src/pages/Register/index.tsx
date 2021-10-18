@@ -79,7 +79,7 @@ export function Register() {
 
   function clearForm() {
     setSize("small");
-    setColor("one");
+    setColor("1");
     setSituation("abandoned");
     setPhoto(null);
   }
