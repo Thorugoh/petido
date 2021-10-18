@@ -1,43 +1,45 @@
 import React, { useState } from "react";
 import { RegisterOption } from "../../components/RegisterOption";
 import { Button, Title, useTheme, IconButton } from "react-native-paper";
-import { Image, View } from "react-native";
+import { Alert, Image, View } from "react-native";
 import { CameraCapturedPicture } from "expo-camera";
 import {
   Pet,
   PetColor,
   PetSituation,
   PetSize,
-  usePetidoContext,
 } from "../../context/PetidoContext";
 import { useLocation } from "../../hooks/useLocation";
 import { useNavigation } from "@react-navigation/core";
+import { TextInput } from "react-native-gesture-handler";
+import { useRegister } from "../../hooks/useRegister";
 
 export function Register() {
   // const [showCamera, setShowCamera] = useState(false);
   const navigation = useNavigation();
+  const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState<CameraCapturedPicture | null>(null);
   const [size, setSize] = useState<PetSize>("small");
   const [color, setColor] = useState<PetColor>("one");
   const [situation, setSituation] = useState<PetSituation>("abandoned");
   const { getCurrentPosition } = useLocation();
 
-  const { registerPet } = usePetidoContext();
+  const { registerPet } = useRegister();
 
   const { colors } = useTheme();
 
   const registerColorOptions = [
     {
       title: "1 cor",
-      key: "one",
+      key: "1",
     },
     {
       title: "2 cor",
-      key: "two",
+      key: "2",
     },
     {
       title: "3 cor",
-      key: "three",
+      key: "3",
     },
   ];
 
@@ -83,6 +85,12 @@ export function Register() {
   }
 
   async function handleRegisterPet() {
+    if (!description) {
+      Alert.alert(
+        "Descriçao não encontrada",
+        "É necesário adicionar uma descrição."
+      );
+    }
     if (!size || !color || !situation || !photo) return;
 
     const location = await getCurrentPosition();
@@ -90,9 +98,10 @@ export function Register() {
 
     const pet: Pet = {
       size,
+      description,
       color,
       situation,
-      photo: { uri: photo.uri, base64: photo.base64! },
+      photo: photo.uri,
       location: {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -129,6 +138,20 @@ export function Register() {
             title="Situação:"
             options={registerSituationOptions}
           />
+          <TextInput
+            onChangeText={setDescription}
+            multiline
+            placeholder="Adicione uma breve descrição"
+            style={{
+              borderColor: "#d8d8d8",
+              borderWidth: 1,
+              borderRadius: 5,
+              height: 80,
+              paddingLeft: 5,
+              maxHeight: 80,
+              marginTop: 20,
+            }}
+          />
         </View>
 
         <View
@@ -159,6 +182,7 @@ export function Register() {
         </View>
 
         <Button
+          color={colors.secundary}
           labelStyle={{ color: "#FFF" }}
           mode="contained"
           onPress={handleRegisterPet}

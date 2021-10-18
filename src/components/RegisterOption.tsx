@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Text, RadioButton, useTheme } from 'react-native-paper';
+import { Text, RadioButton, useTheme } from "react-native-paper";
 
 // type Props = {
 //   title: string;
@@ -12,7 +12,7 @@ import { Text, RadioButton, useTheme } from 'react-native-paper';
 
 interface Props {
   title: string;
-  options: { title: string, key: string }[];
+  options: { title: string; key: string }[];
   extraInfo?: string;
   getSelected: (option: string) => void;
 }
@@ -28,10 +28,8 @@ export function RegisterOption({
   const { colors } = useTheme();
 
   return (
-    <View style={{ ...styles.container, marginTop: 16, }} >
-      <Text style={{ marginBottom: 4 }}>
-        {title}
-      </Text>
+    <View style={{ ...styles.container, marginTop: 16 }}>
+      <Text style={{ marginBottom: 4 }}>{title}</Text>
 
       <RadioButton.Group
         onValueChange={(nextValue) => {
@@ -42,13 +40,15 @@ export function RegisterOption({
       >
         <View style={{ flexDirection: "row" }}>
           {options.map((option) => (
-            <View key={option.key} style={{ alignItems: "center", flexDirection: "row" }}>
+            <View
+              key={option.key}
+              style={{ alignItems: "center", flexDirection: "row" }}
+            >
               <RadioButton color={colors.primary} value={option.key} />
               <Text>{option.title}</Text>
             </View>
           ))}
         </View>
-
       </RadioButton.Group>
     </View>
   );
@@ -57,7 +57,8 @@ export function RegisterOption({
 const styles = StyleSheet.create({
   container: {
     padding: 8,
+    borderColor: "#d8d8d8",
     borderWidth: 1,
     borderRadius: 5,
-  }
-})
+  },
+});

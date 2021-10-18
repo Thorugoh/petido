@@ -8,8 +8,6 @@ import { usePetidoContext } from "../context/PetidoContext";
 
 export function Routes() {
   const { loggedUser } = usePetidoContext();
-  console.log({ loggedUser });
-
   return (
     <NavigationContainer>
       {loggedUser ? <AppStackRoutes /> : <AuthRoutes />}

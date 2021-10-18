@@ -1,8 +1,9 @@
 import { useNavigation } from "@react-navigation/core";
 import React, { useState, useEffect } from "react";
-import { Text, View, ImageBackground, StyleSheet } from "react-native";
+import { Text, View, ImageBackground, StyleSheet, Image } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { useTheme } from "react-native-paper";
+import { StaticMap } from "../../components/StaticMap";
 import {
   Pet,
   PetSituation,
@@ -32,9 +33,9 @@ export function HomeScreen() {
   };
 
   const colors = {
-    one: "1 cor",
-    two: "2 cores",
-    three: "3 cores",
+    "1": "1 cor",
+    "2": "2 cores",
+    "3": "3 cores",
   };
 
   const situation = {
@@ -86,22 +87,37 @@ export function HomeScreen() {
           openDetails(pet);
         }}
       >
-        <View style={{ marginTop: 6, height: 120 }}>
-          <ImageBackground
-            style={{ width: "100%", height: "100%" }}
-            imageStyle={{ borderRadius: 10 }}
-            source={{ uri: pet.photo.uri }}
-          >
-            <View style={{ flex: 1, paddingLeft: 6, paddingTop: 6 }}>
-              <Text style={styles.dogDescription}>Cachorro caramelo</Text>
+        <View
+          style={{
+            borderWidth: 1,
+            marginTop: 6,
+            borderColor: "#8d8d8d",
+          }}
+        >
+          <View style={{ height: 200 }}>
+            <Image
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+              source={{ uri: pet.photo }}
+            />
+          </View>
+          <StaticMap
+            style={{ width: "100%", height: 100, borderRadius: 10 }}
+            show
+            latitude={pet.location.latitude}
+            longitude={pet.location.longitude}
+          />
+        </View>
+        <View style={{ flex: 1, paddingTop: 6 }}>
+          <Text style={styles.dogDescription}>{pet.description}</Text>
 
-              <Text style={styles.dogInfo}>
-                {`${colors[pet.color]} - ${sizes[pet.size]} \n${
-                  situation[pet.situation]
-                }`}
-              </Text>
-            </View>
-          </ImageBackground>
+          <Text style={styles.dogInfo}>
+            {`${colors[pet.color]} - ${sizes[pet.size]} \n${
+              situation[pet.situation]
+            }`}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -139,13 +155,9 @@ export function HomeScreen() {
 
 const styles = StyleSheet.create({
   dogDescription: {
-    color: "#FFF",
-    fontSize: 25,
-    marginBottom: 5,
+    fontSize: 14,
   },
-  dogInfo: {
-    color: "#FFF",
-  },
+  dogInfo: {},
   menuTitles: {
     fontSize: 18,
   },

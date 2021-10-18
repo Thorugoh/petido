@@ -23,7 +23,7 @@ export function PetDetails({ route }) {
         }}
       >
         <Image
-          source={{ uri: pet.photo.uri }}
+          source={{ uri: pet.photo }}
           style={{ width: "95%", height: "40%", borderRadius: 5 }}
         />
         <StaticMap

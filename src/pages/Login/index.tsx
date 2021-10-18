@@ -19,8 +19,6 @@ export function Login({ navigation }) {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(async (userCredential) => {
-        console.log(userCredential);
-
         const user = userCredential.user;
         await AsyncStorage.setItem("@petido:user", JSON.stringify(user));
         setLoggedUser(user);
