@@ -1,14 +1,18 @@
 import { useNavigation } from "@react-navigation/core";
 import React, { useState, useEffect } from "react";
-import { Text, View, ImageBackground, StyleSheet, Image } from "react-native";
+import { Text, View, StyleSheet, Image } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { useTheme } from "react-native-paper";
 import { StaticMap } from "../../components/StaticMap";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
 import {
   Pet,
   PetSituation,
   usePetidoContext,
 } from "../../context/PetidoContext";
+import FoodIcon from "../../../resources/pet_food.svg";
+import FastImage from "react-native-fast-image";
 
 type MenuFilter = PetSituation | "all";
 
@@ -90,12 +94,12 @@ export function HomeScreen() {
         <View
           style={{
             borderWidth: 1,
-            marginTop: 6,
+            marginTop: 15,
             borderColor: "#8d8d8d",
           }}
         >
           <View style={{ height: 200 }}>
-            <Image
+            <FastImage
               style={{
                 width: "100%",
                 height: "100%",
@@ -110,14 +114,26 @@ export function HomeScreen() {
             longitude={pet.location.longitude}
           />
         </View>
-        <View style={{ flex: 1, paddingTop: 6 }}>
+        <View
+          style={{
+            flex: 1,
+            paddingTop: 6,
+            marginBottom: 10,
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <FoodIcon fill={themeColors.primary} />
+            <Text style={styles.dogInfo}>{`Porte ${sizes[
+              pet.size
+            ].toLowerCase()}`}</Text>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <MaterialIcons name="pets" color={themeColors.primary} size={17} />
+            <Text style={styles.dogInfo}>{`Aparenta estar ${situation[
+              pet.situation
+            ].toLowerCase()}`}</Text>
+          </View>
           <Text style={styles.dogDescription}>{pet.description}</Text>
-
-          <Text style={styles.dogInfo}>
-            {`${colors[pet.color]} - ${sizes[pet.size]} \n${
-              situation[pet.situation]
-            }`}
-          </Text>
         </View>
       </TouchableOpacity>
     );

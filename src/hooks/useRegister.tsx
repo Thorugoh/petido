@@ -1,31 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
-import firebase from "../config/firebaseconfig";
+import { database, storage } from "../config/firebaseconfig";
 import { Pet, usePetidoContext } from "../context/PetidoContext";
+import uuid from "react-native-uuid";
 
 function useRegister() {
-  const database = firebase.firestore();
   const { loggedUser, setPets } = usePetidoContext();
-
-  const storage = firebase.storage;
-
-  // async function uploadImage(uri: string, path: string) {
-  //   const response = await fetch(uri);
-  //   const blob = await response.blob();
-  //   var ref = storage().ref().child(path);
-
-  //   const result = ref.put(blob);
-
-  //   const url = await ref.getDownloadURL();
-
-  //   return url;
-  // }
 
   async function uploadImage(uri: string, path: string) {
     const response = await fetch(uri);
     const blob = await response.blob();
 
-    const ref = storage().ref().child(path);
+    const ref = storage.ref().child(path);
 
     const result = await ref.put(blob);
 
@@ -34,9 +20,8 @@ function useRegister() {
     return url;
   }
 
-  async function registerPet(pet: Pet) {
-    const { situation, color, size, photo, location } = pet;
-
+  async function registerPet(pet: Omit<Pet, "id">) {
+    const { situation, colors, size, photo, location } = pet;
     if (!photo) {
       Alert.alert(
         "Foto obrigatória",
@@ -44,58 +29,37 @@ function useRegister() {
       );
       return;
     }
+    if (!situation || !colors || !size || !location) return;
 
-    if (!situation || !color || !size || !location) return;
+    try {
+      const path = `users/${loggedUser.uid}/pets/${uuid.v4()}`;
+      const urlImage = await uploadImage(pet.photo, path);
 
-    const response = await AsyncStorage.getItem("@petido:pets");
+      const userPetsRef = database.ref(`user_pets/${loggedUser.uid}/pets`);
+      await userPetsRef.push({
+        description: pet.description,
+        colors: pet.colors,
+        size: pet.size,
+        location: pet.location,
+        photo: urlImage,
+        situation: pet.situation,
+      });
 
-    if (response) {
-      const pets = JSON.parse(response) as Pet[];
-      const savePets = [...pets, pet];
-      try {
-        const result = await database.collection("pets").add({
-          description: pet.description,
-          colors: parseInt(pet.color),
-          size: pet.size,
-          location: pet.location,
-          photo: null,
-          situation: pet.situation,
-        });
-        const path = `users/${loggedUser.uid}/pets/${result.id}`;
-        const urlImage = await uploadImage(pet.photo, path);
+      const petsRef = database.ref("pets");
+      const firebasePets = await petsRef.push({
+        description: pet.description,
+        colors: pet.colors,
+        size: pet.size,
+        location: pet.location,
+        photo: urlImage,
+        situation: pet.situation,
+        user_id: loggedUser.uid,
+      });
 
-        const updatePhotoResult = await database
-          .collection("pets")
-          .doc(result.id)
-          .update({
-            photo: urlImage,
-          });
-
-        const res = await database
-          .collection("user_pets")
-          .doc(loggedUser.uid)
-          .collection("pets")
-          .doc(result.id)
-          .set({
-            description: pet.description,
-            colors: parseInt(pet.color),
-            size: pet.size,
-            location: pet.location,
-            photo: urlImage,
-            situation: pet.situation,
-          });
-      } catch (err) {
-        console.log(err);
-      }
-
-      await AsyncStorage.setItem("@petido:pets", JSON.stringify(savePets));
-      setPets((pets) => [...pets, pet]);
-
-      return;
+      setPets((pets) => [...pets, { ...pet, id: String(uuid.v4()) }]);
+    } catch (err) {
+      console.log(err);
     }
-
-    await AsyncStorage.setItem("@petido:pets", JSON.stringify([pet]));
-    setPets((pets) => [...pets, pet]);
   }
 
   return {

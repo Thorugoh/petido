@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { RegisterOption } from "../../components/RegisterOption";
 import { Button, Title, useTheme, IconButton } from "react-native-paper";
-import { Alert, Image, View } from "react-native";
+import { Alert, Image, Keyboard, View } from "react-native";
 import { CameraCapturedPicture } from "expo-camera";
 import {
   Pet,
@@ -11,7 +11,11 @@ import {
 } from "../../context/PetidoContext";
 import { useLocation } from "../../hooks/useLocation";
 import { useNavigation } from "@react-navigation/core";
-import { TextInput } from "react-native-gesture-handler";
+import {
+  ScrollView,
+  TextInput,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler";
 import { useRegister } from "../../hooks/useRegister";
 
 export function Register() {
@@ -20,7 +24,7 @@ export function Register() {
   const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState<CameraCapturedPicture | null>(null);
   const [size, setSize] = useState<PetSize>("small");
-  const [color, setColor] = useState<PetColor>("one");
+  const [color, setColor] = useState<PetColor>("1");
   const [situation, setSituation] = useState<PetSituation>("abandoned");
   const { getCurrentPosition } = useLocation();
 
@@ -81,6 +85,7 @@ export function Register() {
     setSize("small");
     setColor("1");
     setSituation("abandoned");
+    setDescription("");
     setPhoto(null);
   }
 
@@ -96,10 +101,10 @@ export function Register() {
     const location = await getCurrentPosition();
     if (!location) return;
 
-    const pet: Pet = {
+    const pet: Omit<Pet, "id"> = {
       size,
       description,
-      color,
+      colors: color,
       situation,
       photo: photo.uri,
       location: {
@@ -109,6 +114,7 @@ export function Register() {
     };
 
     await registerPet(pet);
+    Alert.alert("Sucesso!", "O pet foi cadastrado com sucesso.");
     clearForm();
   }
 
@@ -117,8 +123,11 @@ export function Register() {
   }
 
   return (
-    <View style={{ flex: 1, paddingHorizontal: 16 }}>
-      <>
+    <TouchableWithoutFeedback
+      onPress={Keyboard.dismiss}
+      containerStyle={{ flex: 1, paddingHorizontal: 16 }}
+    >
+      <ScrollView>
         <Title style={{ color: colors.primary }}>Registrar</Title>
         <View style={{ marginBottom: 40 }}>
           <RegisterOption
@@ -138,47 +147,57 @@ export function Register() {
             title="Situação:"
             options={registerSituationOptions}
           />
-          <TextInput
-            onChangeText={setDescription}
-            multiline
-            placeholder="Adicione uma breve descrição"
+          <View
             style={{
-              borderColor: "#d8d8d8",
-              borderWidth: 1,
-              borderRadius: 5,
-              height: 80,
-              paddingLeft: 5,
-              maxHeight: 80,
-              marginTop: 20,
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 10,
             }}
-          />
-        </View>
+          >
+            <View
+              style={{
+                borderWidth: !photo ? 1 : undefined,
+                borderColor: colors.primary,
+                width: 60,
+                height: 60,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 5,
+                marginRight: 5,
+              }}
+            >
+              {!photo ? (
+                <IconButton
+                  icon="camera"
+                  size={40}
+                  onPress={showCamera}
+                  color={colors.primary}
+                />
+              ) : (
+                <Image
+                  style={{ height: "100%", width: "100%", borderRadius: 5 }}
+                  source={{ uri: photo.uri }}
+                />
+              )}
+            </View>
 
-        <View
-          style={{
-            borderWidth: !photo ? 1 : undefined,
-            borderColor: colors.primary,
-            width: 60,
-            height: 60,
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 5,
-            marginBottom: 50,
-          }}
-        >
-          {!photo ? (
-            <IconButton
-              icon="camera"
-              size={40}
-              onPress={showCamera}
-              color={colors.primary}
+            <TextInput
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              placeholder="Adicione uma breve descrição"
+              style={{
+                borderColor: "#d8d8d8",
+                borderWidth: 1,
+                borderRadius: 5,
+                height: 80,
+                width: "82%",
+                paddingLeft: 5,
+                maxHeight: 80,
+              }}
             />
-          ) : (
-            <Image
-              style={{ height: "100%", width: "100%", borderRadius: 5 }}
-              source={{ uri: photo.uri }}
-            />
-          )}
+          </View>
         </View>
 
         <Button
@@ -189,7 +208,7 @@ export function Register() {
         >
           Confirmar
         </Button>
-      </>
-    </View>
+      </ScrollView>
+    </TouchableWithoutFeedback>
   );
 }

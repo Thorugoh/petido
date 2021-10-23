@@ -7,9 +7,10 @@ import React, {
 } from "react";
 import * as Google from "expo-google-app-auth";
 import * as AppleAuthentication from "expo-apple-authentication";
-import firebase from "../config/firebaseconfig";
+import { auth } from "../config/firebaseconfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as AuthSession from "expo-auth-session";
+import { usePetidoContext } from "../context/PetidoContext";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -35,7 +36,7 @@ export const AuthContext = createContext({} as IAuthContextData);
 function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>({} as User);
   const [userStorageLoading, setUserStorageLoading] = useState(true);
-
+  const { setLoggedUser } = usePetidoContext();
   const userStorageKey = "@petido:user";
 
   async function signInWithGoogle() {
@@ -77,11 +78,9 @@ function AuthProvider({ children }: AuthProviderProps) {
           return;
         }
 
-        const credential = firebase.auth.GithubAuthProvider.credential(
-          result.idToken
-        );
+        const credential = auth.GithubAuthProvider.credential(result.idToken);
 
-        await firebase.auth().signInWithCredential(credential);
+        await auth().signInWithCredential(credential);
 
         setUser(userLogged);
         await AsyncStorage.setItem(userStorageKey, JSON.stringify(userLogged));

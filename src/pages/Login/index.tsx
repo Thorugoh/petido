@@ -5,7 +5,7 @@ import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import PetidoeSvg from "../../../resources/petido.svg";
-import firebase from "../../config/firebaseconfig";
+import { auth } from "../../config/firebaseconfig";
 import { usePetidoContext } from "../../context/PetidoContext";
 
 export function Login({ navigation }) {
@@ -15,8 +15,7 @@ export function Login({ navigation }) {
   const { setLoggedUser } = usePetidoContext();
 
   async function handleLoginWithEmail() {
-    firebase
-      .auth()
+    auth()
       .signInWithEmailAndPassword(email, password)
       .then(async (userCredential) => {
         const user = userCredential.user;

@@ -6,12 +6,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { CameraCapturedPicture } from "expo-camera";
 import { PetDetails } from "../pages/PetDetails";
 import { Pet } from "../context/PetidoContext";
-import { View } from "react-native";
+import { ProfileConfig } from "../pages/ProfileConfig";
 
 type StackRouteParams = {
   home: undefined;
   camera: { save: (capturedPhoto: CameraCapturedPicture) => void };
   petDetails: { pet: Pet };
+  profileConfig: undefined;
 };
 
 const { Navigator, Screen } = createStackNavigator<StackRouteParams>();
@@ -26,6 +27,7 @@ export function AppStackRoutes() {
       />
       <Screen name="camera" component={Camera} />
       <Screen name="petDetails" component={PetDetails} />
+      <Screen name="profileConfig" component={ProfileConfig} />
     </Navigator>
   );
 }

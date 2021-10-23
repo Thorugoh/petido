@@ -1,14 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/core";
 import React, {
   ReactNode,
   createContext,
   useState,
   useContext,
   useEffect,
+  useCallback,
   Dispatch,
   SetStateAction,
 } from "react";
-import firebase from "../config/firebaseconfig";
+import { database } from "../config/firebaseconfig";
 
 export type PetSituation = "abandoned" | "lost" | "bruised";
 export type PetColor = "1" | "2" | "3";
@@ -18,7 +20,7 @@ export interface Pet {
   id: string;
   description: string;
   situation: PetSituation;
-  color: PetColor;
+  colors: PetColor;
   size: PetSize;
   photo: string;
   location: {
@@ -43,7 +45,6 @@ const PetidoContext = createContext({} as PetidoContextData);
 const PetidoProvider = ({ children }: PetidoProviderProps) => {
   const [loggedUser, setLoggedUser] = useState();
   const [pets, setPets] = useState<Pet[]>([]);
-  const database = firebase.firestore();
 
   const getPets = async () => {
     const result = await AsyncStorage.getItem("@petido:pets");
@@ -65,15 +66,34 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
     getLoggedUser();
   }, []);
 
-  const getAllRegisteredPets = () => {
-    database.collection("pets").onSnapshot((query) => {
-      const list: Pet[] = [];
-      query.forEach((doc) => {
-        list.push({ ...doc.data(), id: doc.id });
+  const getAllRegisteredPets = async () => {
+    const petsRef = await database.ref("pets").on("value", (pet) => {
+      const databasePets = pet.val();
+      const firebasePets = databasePets ?? {};
+
+      const parsedPets = Object.entries(firebasePets).map(([key, value]) => {
+        return {
+          id: key,
+          colors: value.colors,
+          description: value.description,
+          location: value.location,
+          photo: value.photo,
+          situation: value.situation,
+          size: value.size,
+        };
       });
 
-      setPets(list);
+      setPets(parsedPets);
     });
+
+    // database.collection("pets").onSnapshot((query) => {
+    //   const list: Pet[] = [];
+    //   query.forEach((doc) => {
+    //     list.push({ ...doc.data(), id: doc.id });
+    //   });
+
+    //   setPets(list);
+    // });
   };
 
   useEffect(() => {
