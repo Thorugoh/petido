@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "276306971828",
+    "firebase_url": "https://petido-default-rtdb.firebaseio.com",
+    "project_id": "petido",
+    "storage_bucket": "petido.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276306971828:android:4cac9e1251957efab15be1",
+        "android_client_info": {
+          "package_name": "com.petido"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "276306971828-0mluh44ptl4q8aq2aivsn7f5tpuhf8ct.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.petido",
+            "certificate_hash": "b8a9f86abfcf4334046045b6c9f21b26944052fe"
+          }
+        },
+        {
+          "client_id": "276306971828-vv3rji77r0kiemo4rquo2haglrvihf89.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmCzIkiHSsZX2SrDoef_HGr3Yf-VnqXes"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "276306971828-vv3rji77r0kiemo4rquo2haglrvihf89.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "276306971828-0750tera6cna1lo506l7g9ruplrghbo7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.name.petido"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,13 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
 import { AppStackRoutes } from "./app.stack.routes";
 import { View } from "react-native";
 import { AuthRoutes } from "./app.auth.routes";
 import { usePetidoContext } from "../context/PetidoContext";
+import { auth } from "../config/firebaseconfig";
+import { ActivityIndicator } from "react-native-paper";
 
 export function Routes() {
-  const { loggedUser } = usePetidoContext();
+  const { loggedUser, setLoggedUser } = usePetidoContext();
+  const [initializing, setInitializing] = useState<boolean>(true);
+
+  function onAuthStateChanged(user) {
+    setLoggedUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  if (initializing) return <ActivityIndicator size="large" />;
+
   return (
     <NavigationContainer>
       {loggedUser ? <AppStackRoutes /> : <AuthRoutes />}

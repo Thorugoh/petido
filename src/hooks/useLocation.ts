@@ -1,30 +1,39 @@
-import { Platform, Text, View, StyleSheet } from 'react-native';
-import * as Location from 'expo-location';
+import { Platform, Text, View, StyleSheet } from "react-native";
+import * as Location from "expo-location";
 import { useState, useEffect } from "react";
 
-
 function useLocation() {
-    const [location, setLocation] = useState<Location.LocationObject>();
-    const [errorMsg, setErrorMsg] = useState("");
+  const [location, setLocation] = useState<Location.LocationObject>();
+  const [errorMsg, setErrorMsg] = useState("");
 
-    async function getCurrentPosition() {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-            setErrorMsg('Permission to access location was denied');
-            return;
-        }
+  async function getCurrentPosition() {
+    console.log("get position");
 
-        let location = await Location.getCurrentPositionAsync({});
-        setLocation(location);
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    console.log({ status });
 
-        return location;
+    if (status !== "granted") {
+      setErrorMsg("Permission to access location was denied");
+      return;
     }
 
-    return {
-        getCurrentPosition,
-        location,
-        errorMsg
-    }
+    let location = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.Balanced,
+    });
+    setLocation(location);
+
+    return location;
+  }
+
+  useEffect(() => {
+    getCurrentPosition();
+  }, []);
+
+  return {
+    getCurrentPosition,
+    location,
+    errorMsg,
+  };
 }
 
 export { useLocation };

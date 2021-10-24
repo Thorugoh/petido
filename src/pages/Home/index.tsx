@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/core";
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Image } from "react-native";
+import { Text, View, StyleSheet, Image, Pressable } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { useTheme } from "react-native-paper";
 import { StaticMap } from "../../components/StaticMap";
@@ -13,14 +13,22 @@ import {
 } from "../../context/PetidoContext";
 import FoodIcon from "../../../resources/pet_food.svg";
 import FastImage from "react-native-fast-image";
+import { DistanceDialog } from "../../components/DistanceDialog";
 
 type MenuFilter = PetSituation | "all";
 
 export function HomeScreen() {
   const navigation = useNavigation();
-  const { pets } = usePetidoContext();
+  const {
+    petsInDistance: pets,
+    distanceFilter,
+    setDistanceFilter,
+    orderByDistance,
+    setOrderByDistance,
+  } = usePetidoContext();
   const [filteredPets, setFilteredPets] = useState<Pet[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<MenuFilter>("all");
+  const [showDialog, setShowDialog] = useState(false);
   const { colors: themeColors } = useTheme();
 
   const MENU_FILTER = [
@@ -55,7 +63,7 @@ export function HomeScreen() {
     return (
       <TouchableOpacity
         onPress={() => setSelectedFilter(menuItem.key)}
-        style={{ marginRight: 8, paddingBottom: 15 }}
+        style={{ marginRight: 8, paddingBottom: 5 }}
       >
         <Text
           style={{
@@ -84,9 +92,17 @@ export function HomeScreen() {
     navigation.navigate("petDetails", { pet: pet });
   }
 
+  function onDistanceFilterChange(distance: string) {
+    setDistanceFilter(parseFloat(distance));
+  }
+
+  function handleCloseDialog() {
+    setShowDialog(false);
+  }
+
   const renderPet = (pet: Pet) => {
     return (
-      <TouchableOpacity
+      <View
         onPress={() => {
           openDetails(pet);
         }}
@@ -119,23 +135,44 @@ export function HomeScreen() {
             flex: 1,
             paddingTop: 6,
             marginBottom: 10,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <FoodIcon fill={themeColors.primary} />
-            <Text style={styles.dogInfo}>{`Porte ${sizes[
-              pet.size
-            ].toLowerCase()}`}</Text>
+          <View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <FoodIcon fill={themeColors.primary} />
+              <Text style={styles.dogInfo}>{`Porte ${sizes[
+                pet.size
+              ].toLowerCase()}`}</Text>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <MaterialIcons
+                name="pets"
+                color={themeColors.primary}
+                size={17}
+              />
+              <Text style={styles.dogInfo}>{`Aparenta estar ${situation[
+                pet.situation
+              ].toLowerCase()}`}</Text>
+            </View>
+            <Text style={styles.dogDescription}>{pet.description}</Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <MaterialIcons name="pets" color={themeColors.primary} size={17} />
-            <Text style={styles.dogInfo}>{`Aparenta estar ${situation[
-              pet.situation
-            ].toLowerCase()}`}</Text>
-          </View>
-          <Text style={styles.dogDescription}>{pet.description}</Text>
+
+          <Pressable
+            style={{
+              borderRadius: 5,
+              backgroundColor: themeColors.secundary,
+              padding: 10,
+              marginRight: 10,
+            }}
+            onPress={() => setShowDialog(true)}
+          >
+            <Text style={{ fontWeight: "700", color: "#FFF" }}>Resgatar</Text>
+          </Pressable>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
 
@@ -150,6 +187,12 @@ export function HomeScreen() {
     }
   }, [selectedFilter, pets]);
 
+  function changeOrderBy() {
+    setOrderByDistance((current) =>
+      current === "highest" ? "lowest" : "highest"
+    );
+  }
+
   return (
     <View style={{ flex: 1, paddingHorizontal: 16 }}>
       <View>
@@ -160,11 +203,51 @@ export function HomeScreen() {
           renderItem={({ item }) => renderTopMenuFilter(item)}
         />
       </View>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Pressable
+          style={{
+            maxWidth: 500,
+            marginBottom: 10,
+            alignSelf: "flex-end",
+            alignItems: "center",
+            flexDirection: "row",
+          }}
+          onPress={changeOrderBy}
+        >
+          <MaterialIcons
+            size={20}
+            name="swap-vert"
+            color={themeColors.secundary}
+          />
+          <Text style={{ fontWeight: "700", color: themeColors.secundary }}>
+            {orderByDistance === "highest" ? `Mais distantes` : "Mais próximos"}
+          </Text>
+        </Pressable>
+        <Pressable
+          style={{
+            maxWidth: 500,
+            marginBottom: 10,
+            alignSelf: "flex-end",
+            alignItems: "center",
+          }}
+          onPress={() => setShowDialog(true)}
+        >
+          <Text style={{ fontWeight: "700", color: themeColors.secundary }}>
+            {`Filtro de distância: ${distanceFilter}km`}
+          </Text>
+        </Pressable>
+      </View>
 
       <FlatList
         data={filteredPets}
         renderItem={({ item }) => renderPet(item)}
       />
+      {showDialog && (
+        <DistanceDialog
+          onDismiss={handleCloseDialog}
+          onConfirm={onDistanceFilterChange}
+        />
+      )}
     </View>
   );
 }

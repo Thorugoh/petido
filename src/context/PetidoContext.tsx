@@ -1,17 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/core";
+
 import React, {
   ReactNode,
   createContext,
   useState,
   useContext,
   useEffect,
-  useCallback,
+  useMemo,
   Dispatch,
   SetStateAction,
 } from "react";
 import { database } from "../config/firebaseconfig";
-
+import { useLocation } from "../hooks/useLocation";
+import { getDistanceBetweenCoordinates } from "../utils/getDistanceBetweenCoordinates";
 export type PetSituation = "abandoned" | "lost" | "bruised";
 export type PetColor = "1" | "2" | "3";
 export type PetSize = "small" | "medium" | "large";
@@ -27,13 +28,19 @@ export interface Pet {
     latitude: number;
     longitude: number;
   };
+  distance?: number;
 }
 
 interface PetidoContextData {
   loggedUser: any;
   setLoggedUser: Dispatch<SetStateAction<any>>;
   pets: Pet[];
+  petsInDistance: Pet[];
   setPets: Dispatch<SetStateAction<Pet[]>>;
+  distanceFilter: number;
+  setDistanceFilter: Dispatch<SetStateAction<number>>;
+  orderByDistance: "lowest" | "highest";
+  setOrderByDistance: Dispatch<SetStateAction<"lowest" | "highest">>;
 }
 
 interface PetidoProviderProps {
@@ -45,14 +52,49 @@ const PetidoContext = createContext({} as PetidoContextData);
 const PetidoProvider = ({ children }: PetidoProviderProps) => {
   const [loggedUser, setLoggedUser] = useState();
   const [pets, setPets] = useState<Pet[]>([]);
+  const [petsInDistance, setPetsInDistance] = useState<Pet[]>([]);
+  const [distanceFilter, setDistanceFilter] = useState(3);
+  const [orderByDistance, setOrderByDistance] = useState<"lowest" | "highest">(
+    "lowest"
+  );
 
-  const getPets = async () => {
-    const result = await AsyncStorage.getItem("@petido:pets");
-    if (result) {
-      setPets(JSON.parse(result));
+  const { location } = useLocation();
+
+  const petsWithDistance = useMemo(() => {
+    if (!location) return pets;
+
+    return pets.map((pet: Pet) => {
+      const distanceInKm = getDistanceBetweenCoordinates(
+        location.coords,
+        pet.location
+      );
+
+      return { ...pet, distance: distanceInKm };
+    });
+  }, [pets, location]);
+
+  async function filterByDistance(pets: Pet[]) {
+    if (pets && location?.coords) {
+      const filtered = pets.filter((pet) => {
+        return pet.distance ? pet.distance < distanceFilter : true;
+      });
+
+      if (!filtered.every((pet) => !!pet.distance)) {
+        setPetsInDistance(filtered);
+        return;
+      }
+
+      const sorted =
+        orderByDistance === "lowest"
+          ? filtered.slice().sort((a, b) => a.distance! - b.distance!)
+          : filtered.slice().sort((a, b) => b.distance! - a.distance!);
+
+      setPetsInDistance(sorted);
     }
-    return [];
-  };
+  }
+  useEffect(() => {
+    filterByDistance(petsWithDistance);
+  }, [pets, distanceFilter, orderByDistance]);
 
   async function getLoggedUser() {
     const result = await AsyncStorage.getItem("@petido:user");
@@ -67,7 +109,7 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
   }, []);
 
   const getAllRegisteredPets = async () => {
-    const petsRef = await database.ref("pets").on("value", (pet) => {
+    const petsRef = await database.ref("pets").on("value", async (pet) => {
       const databasePets = pet.val();
       const firebasePets = databasePets ?? {};
 
@@ -85,23 +127,10 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
 
       setPets(parsedPets);
     });
-
-    // database.collection("pets").onSnapshot((query) => {
-    //   const list: Pet[] = [];
-    //   query.forEach((doc) => {
-    //     list.push({ ...doc.data(), id: doc.id });
-    //   });
-
-    //   setPets(list);
-    // });
   };
 
   useEffect(() => {
     getAllRegisteredPets();
-  }, []);
-
-  useEffect(() => {
-    getPets();
   }, []);
 
   useEffect(() => {
@@ -114,7 +143,17 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
 
   return (
     <PetidoContext.Provider
-      value={{ setPets, pets, loggedUser, setLoggedUser }}
+      value={{
+        setPets,
+        pets,
+        loggedUser,
+        setLoggedUser,
+        petsInDistance,
+        distanceFilter,
+        setDistanceFilter,
+        orderByDistance,
+        setOrderByDistance,
+      }}
     >
       {children}
     </PetidoContext.Provider>
@@ -122,10 +161,29 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
 };
 
 function usePetidoContext() {
-  const { pets, setPets, loggedUser, setLoggedUser } =
-    useContext(PetidoContext);
+  const {
+    pets,
+    setPets,
+    loggedUser,
+    setLoggedUser,
+    petsInDistance,
+    distanceFilter,
+    setDistanceFilter,
+    orderByDistance,
+    setOrderByDistance,
+  } = useContext(PetidoContext);
 
-  return { pets, setPets, loggedUser, setLoggedUser };
+  return {
+    pets,
+    setPets,
+    loggedUser,
+    setLoggedUser,
+    petsInDistance,
+    distanceFilter,
+    setDistanceFilter,
+    orderByDistance,
+    setOrderByDistance,
+  };
 }
 
 export { PetidoProvider, usePetidoContext };
