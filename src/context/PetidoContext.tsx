@@ -140,7 +140,7 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
     };
 
     const userPetsRef = database.ref(`user_pets/${pet.user_id}/pets/${pet.id}`);
-    await userPetsRef.set(petMarkedAsRescued);
+    await userPetsRef.update(petMarkedAsRescued);
 
     const userRescuedPetsRef = database.ref(
       `user_pets/${loggedUser.uid}/rescued_pets/${pet.id}`

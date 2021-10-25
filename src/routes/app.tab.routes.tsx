@@ -4,7 +4,7 @@ import { HomeScreen } from "../pages/Home";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Register } from "../pages/Register";
 import { useTheme } from "react-native-paper";
-import { MyProfile } from "../pages/Home/MyProfile";
+import { MyProfile } from "../pages/MyProfile";
 import AddIcon from "../../resources/add_pet.svg";
 
 const Tab = createBottomTabNavigator();

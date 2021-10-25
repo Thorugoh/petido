@@ -11,6 +11,14 @@
       "image": "./resources/splash.png",
       "backgroundColor": "#D84371"
     },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O aplicativo acessa sua camera para que você possa compartilha-las."
+        }
+      ]
+    ],
     "assetBundlePatterns": [
       "**/*"
     ]

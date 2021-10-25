@@ -4,8 +4,8 @@ import { Dimensions, Pressable, View, Image } from "react-native";
 import FastImage from "react-native-fast-image";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
-import { database } from "../../../config/firebaseconfig";
-import { Pet, usePetidoContext } from "../../../context/PetidoContext";
+import { database } from "../../config/firebaseconfig";
+import { Pet, usePetidoContext } from "../../context/PetidoContext";
 
 const WIDTH = Dimensions.get("window").width;
 const PHOTO_BOX_SIZE = (WIDTH - 10) * 0.3333;
@@ -68,7 +68,7 @@ export function MyProfile({ navigation }) {
   );
 
   function handleEditPerfil() {
-    navigation.navigate("profileConfig");
+    navigation.navigate("profileConfig", { firstLogin: false });
   }
 
   return (
@@ -87,7 +87,12 @@ export function MyProfile({ navigation }) {
             backgroundColor: colors.primary,
             borderRadius: 35,
           }}
-        />
+        >
+          <FastImage
+            style={{ width: "100%", height: "100%", borderRadius: 35 }}
+            source={{ uri: currentInfos?.photo }}
+          />
+        </View>
         <View style={{ marginLeft: 8 }}>
           <Text style={{ fontWeight: "700" }}>
             {currentInfos?.name || loggedUser.email}
@@ -145,7 +150,7 @@ export function MyProfile({ navigation }) {
                   style={{ width: "100%", height: "100%" }}
                   source={{
                     uri: pet.photo,
-                    //priority: FastImage.priority.normal,
+                    priority: FastImage.priority.high,
                   }}
                 />
               </View>
