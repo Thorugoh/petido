@@ -2,7 +2,12 @@ import { useNavigation } from "@react-navigation/core";
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Image, Pressable } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
-import { useTheme } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Button,
+  IconButton,
+  useTheme,
+} from "react-native-paper";
 import { StaticMap } from "../../components/StaticMap";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -25,10 +30,12 @@ export function HomeScreen() {
     setDistanceFilter,
     orderByDistance,
     setOrderByDistance,
+    rescuePet,
   } = usePetidoContext();
   const [filteredPets, setFilteredPets] = useState<Pet[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<MenuFilter>("all");
   const [showDialog, setShowDialog] = useState(false);
+  const [rescuePetLoading, setRescuePetLoading] = useState<string[]>([]);
   const { colors: themeColors } = useTheme();
 
   const MENU_FILTER = [
@@ -100,13 +107,21 @@ export function HomeScreen() {
     setShowDialog(false);
   }
 
+  async function handleRescuePet(pet: Pet) {
+    setRescuePetLoading((current) => [...current, pet.id]);
+
+    await rescuePet(pet);
+
+    setRescuePetLoading((current) => current.filter((id) => id !== pet.id));
+  }
+
+  function isLoading(petId: string) {
+    return !!rescuePetLoading.find((id) => petId === id);
+  }
+
   const renderPet = (pet: Pet) => {
     return (
-      <View
-        onPress={() => {
-          openDetails(pet);
-        }}
-      >
+      <View>
         <View
           style={{
             borderWidth: 1,
@@ -158,9 +173,19 @@ export function HomeScreen() {
               ].toLowerCase()}`}</Text>
             </View>
             <Text style={styles.dogDescription}>{pet.description}</Text>
+            <Text style={styles.dogDescription}>{pet.user_id}</Text>
           </View>
 
-          <Pressable
+          <Button
+            disabled={isLoading(pet.id)}
+            loading={isLoading(pet.id)}
+            mode="contained"
+            onPress={() => handleRescuePet(pet)}
+            color={themeColors.secundary}
+          >
+            Resgatar
+          </Button>
+          {/* <Pressable
             style={{
               borderRadius: 5,
               backgroundColor: themeColors.secundary,
@@ -170,7 +195,7 @@ export function HomeScreen() {
             onPress={() => setShowDialog(true)}
           >
             <Text style={{ fontWeight: "700", color: "#FFF" }}>Resgatar</Text>
-          </Pressable>
+          </Pressable> */}
         </View>
       </View>
     );
@@ -239,6 +264,7 @@ export function HomeScreen() {
       </View>
 
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={filteredPets}
         renderItem={({ item }) => renderPet(item)}
       />

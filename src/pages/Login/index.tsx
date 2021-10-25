@@ -13,8 +13,10 @@ export function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setLoggedUser } = usePetidoContext();
+  const [loading, setLoading] = useState(false);
 
   async function handleLoginWithEmail() {
+    setLoading(true);
     auth()
       .signInWithEmailAndPassword(email, password)
       .then(async (userCredential) => {
@@ -26,6 +28,9 @@ export function Login({ navigation }) {
         const errorCode = error.code;
         const errorMessage = error.message;
         Alert.alert("Erro", errorMessage);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
@@ -58,6 +63,8 @@ export function Login({ navigation }) {
           </KeyboardAvoidingView>
         </View>
         <Button
+          disabled={loading}
+          loading={loading}
           mode="contained"
           labelStyle={{ color: "#FFF" }}
           onPress={handleLoginWithEmail}

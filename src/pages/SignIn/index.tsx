@@ -13,6 +13,7 @@ export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const { setLoggedUser } = usePetidoContext();
 
@@ -29,6 +30,7 @@ export function SignIn() {
       );
     }
 
+    setLoading(true);
     auth()
       .createUserWithEmailAndPassword(email, password)
       .then(async (userCredential) => {
@@ -42,6 +44,9 @@ export function SignIn() {
         const errorMessage = error.message;
         Alert.alert("Erro", errorMessage);
         // ..
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
@@ -83,6 +88,8 @@ export function SignIn() {
         />
 
         <Button
+          disabled={loading}
+          loading={loading}
           style={{ marginTop: 15, width: "40%" }}
           mode="contained"
           labelStyle={{ color: "#FFF" }}
