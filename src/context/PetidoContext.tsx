@@ -29,6 +29,7 @@ export interface Pet {
     longitude: number;
   };
   distance?: number;
+  user_id?: string;
 }
 
 interface PetidoContextData {
@@ -41,6 +42,7 @@ interface PetidoContextData {
   setDistanceFilter: Dispatch<SetStateAction<number>>;
   orderByDistance: "lowest" | "highest";
   setOrderByDistance: Dispatch<SetStateAction<"lowest" | "highest">>;
+  rescuePet: (pet: Pet) => Promise<void>;
 }
 
 interface PetidoProviderProps {
@@ -122,12 +124,32 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
           photo: value.photo,
           situation: value.situation,
           size: value.size,
+          user_id: value.user_id,
         };
       });
 
       setPets(parsedPets);
     });
   };
+
+  async function rescuePet(pet: Pet) {
+    const petMarkedAsRescued = {
+      ...pet,
+      situation: "rescued",
+      rescuer_id: loggedUser.uid,
+    };
+
+    const userPetsRef = database.ref(`user_pets/${pet.user_id}/pets/${pet.id}`);
+    await userPetsRef.set(petMarkedAsRescued);
+
+    const userRescuedPetsRef = database.ref(
+      `user_pets/${loggedUser.uid}/rescued_pets/${pet.id}`
+    );
+    await userRescuedPetsRef.set(petMarkedAsRescued);
+
+    const petRef = database.ref(`pets/${pet.id}`);
+    await petRef.remove();
+  }
 
   useEffect(() => {
     getAllRegisteredPets();
@@ -153,6 +175,7 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
         setDistanceFilter,
         orderByDistance,
         setOrderByDistance,
+        rescuePet,
       }}
     >
       {children}
@@ -171,6 +194,7 @@ function usePetidoContext() {
     setDistanceFilter,
     orderByDistance,
     setOrderByDistance,
+    rescuePet,
   } = useContext(PetidoContext);
 
   return {
@@ -183,6 +207,7 @@ function usePetidoContext() {
     setDistanceFilter,
     orderByDistance,
     setOrderByDistance,
+    rescuePet,
   };
 }
 
