@@ -17,6 +17,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 import { useRegister } from "../../hooks/useRegister";
+import { finally } from "../../../metro.config";
 
 export function Register() {
   // const [showCamera, setShowCamera] = useState(false);
@@ -27,6 +28,7 @@ export function Register() {
   const [color, setColor] = useState<PetColor>("1");
   const [situation, setSituation] = useState<PetSituation>("abandoned");
   const { getCurrentPosition } = useLocation();
+  const [loading, setLoading] = useState(false);
 
   const { registerPet } = useRegister();
 
@@ -95,27 +97,42 @@ export function Register() {
         "Descriçao não encontrada",
         "É necesário adicionar uma descrição."
       );
+
+      return;
     }
-    if (!size || !color || !situation || !photo) return;
 
-    const location = await getCurrentPosition();
-    if (!location) return;
+    if (!photo) {
+      Alert.alert(
+        "Foto obrigatória",
+        "Parece que você nao adicionou uma foto."
+      );
+      return;
+    }
 
-    const pet: Omit<Pet, "id"> = {
-      size,
-      description,
-      colors: color,
-      situation,
-      photo: photo.uri,
-      location: {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      },
-    };
+    if (!size || !color || !situation || !photo || !description) return;
+    setLoading(true);
+    try {
+      const location = await getCurrentPosition();
+      if (!location) return;
 
-    await registerPet(pet);
-    Alert.alert("Sucesso!", "O pet foi cadastrado com sucesso.");
-    clearForm();
+      const pet: Omit<Pet, "id"> = {
+        size,
+        description,
+        colors: color,
+        situation,
+        photo: photo?.uri,
+        location: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        },
+      };
+
+      await registerPet(pet);
+      Alert.alert("Sucesso!", "O pet foi cadastrado com sucesso.");
+      clearForm();
+    } finally {
+      setLoading(false);
+    }
   }
 
   function showCamera() {
@@ -201,6 +218,8 @@ export function Register() {
         </View>
 
         <Button
+          loading={loading}
+          disabled={loading}
           color={colors.secundary}
           labelStyle={{ color: "#FFF" }}
           mode="contained"
