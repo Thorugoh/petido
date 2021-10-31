@@ -18,6 +18,8 @@ export function SignIn() {
   const { setLoggedUser } = usePetidoContext();
 
   async function handleSignInWithEmail() {
+    if (!password || !confirmPassword) return;
+
     if (password !== confirmPassword) {
       Alert.alert("Senhas divergentes", "As senhas devem ser iguais");
       return;
@@ -32,7 +34,7 @@ export function SignIn() {
 
     setLoading(true);
     auth()
-      .createUserWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email.trim(), password)
       .then(async (userCredential) => {
         const user = userCredential.user;
         await AsyncStorage.setItem("@petido:user", JSON.stringify(user));
