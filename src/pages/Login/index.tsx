@@ -16,6 +16,11 @@ export function Login({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   async function handleLoginWithEmail() {
+    if (!email || !password) {
+      Alert.alert("É necessário adicionar email e senha");
+      return;
+    }
+
     setLoading(true);
     auth()
       .signInWithEmailAndPassword(email, password)
