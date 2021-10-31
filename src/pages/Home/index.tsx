@@ -2,12 +2,7 @@ import { useNavigation } from "@react-navigation/core";
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Image, Pressable } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
-import {
-  ActivityIndicator,
-  Button,
-  IconButton,
-  useTheme,
-} from "react-native-paper";
+import { Button, useTheme } from "react-native-paper";
 import { StaticMap } from "../../components/StaticMap";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -17,8 +12,8 @@ import {
   usePetidoContext,
 } from "../../context/PetidoContext";
 import FoodIcon from "../../../resources/pet_food.svg";
-import FastImage from "react-native-fast-image";
 import { DistanceDialog } from "../../components/DistanceDialog";
+import FastImage from "react-native-fast-image";
 
 type MenuFilter = PetSituation | "all";
 
@@ -173,7 +168,6 @@ export function HomeScreen() {
               ].toLowerCase()}`}</Text>
             </View>
             <Text style={styles.dogDescription}>{pet.description}</Text>
-            <Text style={styles.dogDescription}>{pet.user_id}</Text>
           </View>
 
           <Button
