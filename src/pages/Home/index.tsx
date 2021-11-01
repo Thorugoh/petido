@@ -179,17 +179,6 @@ export function HomeScreen() {
           >
             Resgatar
           </Button>
-          {/* <Pressable
-            style={{
-              borderRadius: 5,
-              backgroundColor: themeColors.secundary,
-              padding: 10,
-              marginRight: 10,
-            }}
-            onPress={() => setShowDialog(true)}
-          >
-            <Text style={{ fontWeight: "700", color: "#FFF" }}>Resgatar</Text>
-          </Pressable> */}
         </View>
       </View>
     );
