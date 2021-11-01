@@ -15,6 +15,11 @@ export function DistanceDialog({ onDismiss, onConfirm }: Props) {
   }
 
   function handleConfirm() {
+    if (!distance) {
+      onDismiss && onDismiss();
+
+      return;
+    }
     onConfirm(distance);
     onDismiss && onDismiss();
   }
