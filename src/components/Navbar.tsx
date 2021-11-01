@@ -6,6 +6,7 @@ export function NavBar({ navigation }) {
   return (
     <Appbar.Header
       style={{
+        marginTop: 0,
         backgroundColor: "#F9F9F9",
         elevation: 0,
         justifyContent: "space-between",
