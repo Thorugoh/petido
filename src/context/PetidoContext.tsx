@@ -96,7 +96,7 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
   }
   useEffect(() => {
     filterByDistance(petsWithDistance);
-  }, [pets, distanceFilter, orderByDistance]);
+  }, [distanceFilter, petsWithDistance, orderByDistance]);
 
   async function getLoggedUser() {
     const result = await AsyncStorage.getItem("@petido:user");
