@@ -1,8 +1,8 @@
 import { useFocusEffect } from "@react-navigation/core";
 import React, { useState, useCallback, useEffect } from "react";
-import { Dimensions, Pressable, View, Image } from "react-native";
+import { Dimensions, Pressable, View } from "react-native";
 import FastImage from "react-native-fast-image";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 import { database } from "../../config/firebaseconfig";
 import { Pet, usePetidoContext } from "../../context/PetidoContext";
@@ -71,92 +71,96 @@ export function MyProfile({ navigation }) {
     navigation.navigate("profileConfig", { firstLogin: false });
   }
 
-  return (
-    <View style={{ flex: 1 }}>
-      <View
-        style={{
-          padding: 10,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
+  function renderHeader() {
+    return (
+      <>
         <View
           style={{
-            height: 70,
-            width: 70,
-            backgroundColor: colors.primary,
-            borderRadius: 35,
+            padding: 10,
+            flexDirection: "row",
+            alignItems: "center",
           }}
         >
-          <FastImage
-            style={{ width: "100%", height: "100%", borderRadius: 35 }}
-            source={{ uri: currentInfos?.photo }}
-          />
+          <View
+            style={{
+              height: 70,
+              width: 70,
+              backgroundColor: colors.primary,
+              borderRadius: 35,
+            }}
+          >
+            <FastImage
+              style={{ width: "100%", height: "100%", borderRadius: 35 }}
+              source={{ uri: currentInfos?.photo }}
+            />
+          </View>
+          <View style={{ marginLeft: 8 }}>
+            <Text style={{ fontWeight: "700" }}>
+              {currentInfos?.name || loggedUser.email}
+            </Text>
+            <Text>{`Pets Localizados: ${pets.length}`}</Text>
+            <Text>Pets Adotados: 0</Text>
+          </View>
         </View>
-        <View style={{ marginLeft: 8 }}>
-          <Text style={{ fontWeight: "700" }}>
-            {currentInfos?.name || loggedUser.email}
-          </Text>
-          <Text>{`Pets Localizados: ${pets.length}`}</Text>
-          <Text>Pets Adotados: 0</Text>
+        <View
+          style={{
+            marginLeft: 5,
+            width: 90,
+            padding: 3,
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 10,
+            borderRadius: 5,
+            backgroundColor: colors.secundary,
+          }}
+        >
+          <Pressable onPress={handleEditPerfil}>
+            <Text style={{ color: "#FFF" }}>Edit Profile</Text>
+          </Pressable>
         </View>
-      </View>
-      <View
-        style={{
-          marginLeft: 5,
-          width: 90,
-          padding: 3,
-          justifyContent: "center",
-          alignItems: "center",
-          marginBottom: 10,
-          borderRadius: 5,
-          backgroundColor: colors.secundary,
-        }}
-      >
-        <Pressable onPress={handleEditPerfil}>
-          <Text style={{ color: "#FFF" }}>Edit Profile</Text>
-        </Pressable>
-      </View>
 
-      <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-        <TouchableOpacity style={{ marginRight: 8, paddingBottom: 15 }}>
-          <Text style={{ fontSize: 16 }}>Postados</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ marginRight: 8, paddingBottom: 15 }}>
-          <Text style={{ fontSize: 16 }}>Adotados</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+          <TouchableOpacity style={{ marginRight: 8, paddingBottom: 15 }}>
+            <Text style={{ fontSize: 16 }}>Postados</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ marginRight: 8, paddingBottom: 15 }}>
+            <Text style={{ fontSize: 16 }}>Adotados</Text>
+          </TouchableOpacity>
+        </View>
+      </>
+    );
+  }
+
+  function renderPhotos(pet: Pet) {
+    return (
       <View
         style={{
-          marginTop: 10,
-          flexDirection: "row",
-          justifyContent: "flex-start",
-          flexWrap: "wrap",
+          marginBottom: SPACE_BETWEEN,
+          marginLeft: SPACE_BETWEEN,
+          width: PHOTO_BOX_SIZE,
+          height: PHOTO_BOX_SIZE,
         }}
       >
-        {pets &&
-          pets.map((pet) => {
-            return (
-              <View
-                key={pet.id}
-                style={{
-                  marginBottom: SPACE_BETWEEN,
-                  marginLeft: SPACE_BETWEEN,
-                  width: PHOTO_BOX_SIZE,
-                  height: PHOTO_BOX_SIZE,
-                }}
-              >
-                <FastImage
-                  style={{ width: "100%", height: "100%" }}
-                  source={{
-                    uri: pet.photo,
-                    priority: FastImage.priority.high,
-                  }}
-                />
-              </View>
-            );
-          })}
+        <FastImage
+          style={{ width: "100%", height: "100%" }}
+          source={{
+            uri: pet.photo,
+            priority: FastImage.priority.high,
+          }}
+        />
       </View>
+    );
+  }
+
+  return (
+    <View style={{ flex: 1 }}>
+      <FlatList
+        ListHeaderComponent={renderHeader()}
+        keyExtractor={(item) => item.id}
+        numColumns={3}
+        data={pets}
+        renderItem={({ item }) => renderPhotos(item)}
+      />
     </View>
   );
 }
