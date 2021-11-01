@@ -15,8 +15,12 @@ export function MyProfile({ navigation }) {
   const { colors } = useTheme();
   const { loggedUser } = usePetidoContext();
   const [pets, setPets] = useState<Pet[]>([]);
+  const [rescuedPets, setRescuedPets] = useState<Pet[]>([]);
   const [currentInfos, setCurrentInfos] =
     useState<{ name: string; username: string }>();
+  const [selectedMenu, setSelectedMenu] = useState<
+    "registeredPets" | "rescuedPets"
+  >("registeredPets");
 
   const getCurrentInfos = () => {
     const userRef = database.ref(`users/${loggedUser.uid}`);
@@ -28,33 +32,48 @@ export function MyProfile({ navigation }) {
     });
   };
 
-  const getRegisteredPetsFromUser = async () => {
-    const petsRef = database
-      .ref(`user_pets/${loggedUser.uid}/pets`)
-      .on("value", () => {
-        const petsRef = database
-          .ref(`user_pets/${loggedUser.uid}/pets`)
-          .on("value", (pet) => {
-            const databasePets = pet.val();
-            const firebasePets = databasePets ?? {};
+  const getRescuedPetsFromUser = async () => {
+    database
+      .ref(`user_pets/${loggedUser.uid}/rescued_pets`)
+      .on("value", (pet) => {
+        const databasePets = pet.val();
+        const firebasePets = databasePets ?? {};
 
-            const parsedPets = Object.entries(firebasePets).map(
-              ([key, value]) => {
-                return {
-                  id: key,
-                  colors: value.colors,
-                  description: value.description,
-                  location: value.location,
-                  photo: value.photo,
-                  situation: value.situation,
-                  size: value.size,
-                };
-              }
-            );
+        const parsedPets = Object.entries(firebasePets).map(([key, value]) => {
+          return {
+            id: key,
+            colors: value.colors,
+            description: value.description,
+            location: value.location,
+            photo: value.photo,
+            situation: value.situation,
+            size: value.size,
+          };
+        });
 
-            setPets(parsedPets);
-          });
+        setRescuedPets(parsedPets);
       });
+  };
+
+  const getRegisteredPetsFromUser = async () => {
+    database.ref(`user_pets/${loggedUser.uid}/pets`).on("value", (pet) => {
+      const databasePets = pet.val();
+      const firebasePets = databasePets ?? {};
+
+      const parsedPets = Object.entries(firebasePets).map(([key, value]) => {
+        return {
+          id: key,
+          colors: value.colors,
+          description: value.description,
+          location: value.location,
+          photo: value.photo,
+          situation: value.situation,
+          size: value.size,
+        };
+      });
+
+      setPets(parsedPets);
+    });
   };
 
   useEffect(() => {
@@ -64,6 +83,7 @@ export function MyProfile({ navigation }) {
   useFocusEffect(
     useCallback(() => {
       getRegisteredPetsFromUser();
+      getRescuedPetsFromUser();
     }, [])
   );
 
@@ -99,7 +119,7 @@ export function MyProfile({ navigation }) {
               {currentInfos?.name || loggedUser.email}
             </Text>
             <Text>{`Pets Localizados: ${pets.length}`}</Text>
-            <Text>Pets Adotados: 0</Text>
+            <Text>Pets Resgatados: 0</Text>
           </View>
         </View>
         <View
@@ -120,11 +140,38 @@ export function MyProfile({ navigation }) {
         </View>
 
         <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-          <TouchableOpacity style={{ marginRight: 8, paddingBottom: 15 }}>
-            <Text style={{ fontSize: 16 }}>Postados</Text>
+          <TouchableOpacity
+            onPress={() => setSelectedMenu("registeredPets")}
+            style={{ marginRight: 8, marginBottom: 15 }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight:
+                  selectedMenu === "registeredPets" ? "700" : undefined,
+                color:
+                  selectedMenu === "registeredPets"
+                    ? colors.secundary
+                    : "#4D4D4D",
+              }}
+            >
+              Postados
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginRight: 8, paddingBottom: 15 }}>
-            <Text style={{ fontSize: 16 }}>Adotados</Text>
+          <TouchableOpacity
+            onPress={() => setSelectedMenu("rescuedPets")}
+            style={{ marginRight: 8, paddingBottom: 15 }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: selectedMenu === "rescuedPets" ? "700" : undefined,
+                color:
+                  selectedMenu === "rescuedPets" ? colors.secundary : "#4D4D4D",
+              }}
+            >
+              Resgatados
+            </Text>
           </TouchableOpacity>
         </View>
       </>
@@ -158,7 +205,7 @@ export function MyProfile({ navigation }) {
         ListHeaderComponent={renderHeader()}
         keyExtractor={(item) => item.id}
         numColumns={3}
-        data={pets}
+        data={selectedMenu === "registeredPets" ? pets : rescuedPets}
         renderItem={({ item }) => renderPhotos(item)}
       />
     </View>
