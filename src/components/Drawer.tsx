@@ -18,7 +18,6 @@ export function Drawer() {
       <PaperDrawer.Section
         style={{ backgroundColor: "#F9F9F9", width: "100%", height: "100%" }}
       >
-        <PaperDrawer.Item label="Configurações" />
         <View
           style={{ flex: 1, justifyContent: "flex-end", marginVertical: 15 }}
         >
