@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
-import { Alert, View, KeyboardAvoidingView } from "react-native";
+import { Alert, View, KeyboardAvoidingView, StyleSheet } from "react-native";
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -44,25 +44,23 @@ export function Login({ navigation }) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <SafeAreaView />
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.innerContainer}>
         <PetidoeSvg width={200} height={75} />
-        <Text style={{ textAlign: "center", marginTop: 40, fontSize: 20 }}>
-          {`Realize seu login\n`}
-        </Text>
+        <Text style={styles.title}>{`Realize seu login\n`}</Text>
 
-        <View style={{ height: "40%", marginTop: 40 }}>
+        <View style={styles.inputContainer}>
           <KeyboardAvoidingView style={{ flex: 1, width: 250 }}>
             <TextInput
               label="Email:"
-              style={{ height: 60, width: "100%" }}
+              style={styles.emailPasswordInput}
               onChangeText={setEmail}
             />
             <TextInput
               label="Senha:"
               onChangeText={setPassword}
-              style={{ height: 60, width: "100%", marginTop: 8 }}
+              style={styles.passwordInput}
               secureTextEntry
             />
           </KeyboardAvoidingView>
@@ -71,50 +69,28 @@ export function Login({ navigation }) {
           disabled={loading}
           loading={loading}
           mode="contained"
-          labelStyle={{ color: "#FFF" }}
+          labelStyle={styles.loginButtonLabel}
           onPress={handleLoginWithEmail}
         >
           Entrar
         </Button>
-        <Button style={{ marginTop: 5 }} onPress={handleGoToSignIn}>
+        <Button style={styles.registerButton} onPress={handleGoToSignIn}>
           Quero me cadastrar!
         </Button>
-
-        {/* <Pressable
-          style={{
-            width: 200,
-            borderWidth: 1,
-            padding: 5,
-            height: 40,
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            borderRadius: 5,
-            marginTop: 40,
-          }}
-        >
-          <AppleSvg width={25} height={25} />
-          <Text style={{ fontSize: 18, marginLeft: 6 }}>Entrar com Apple</Text>
-        </Pressable>
-
-        <Pressable
-          style={{
-            width: 200,
-            borderWidth: 1,
-            padding: 5,
-            height: 40,
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            borderRadius: 5,
-            marginTop: 5,
-          }}
-          onPress={handleSignInWithGoogle}
-        >
-          <GoogleSvg width={25} height={25} />
-          <Text style={{ fontSize: 18, marginLeft: 6 }}>Entrar com Google</Text>
-        </Pressable> */}
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  innerContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+  title: { textAlign: "center", marginTop: 40, fontSize: 20 },
+  inputContainer: { height: "40%", marginTop: 40 },
+  emailPasswordInput: { height: 60, width: "100%" },
+  passwordInput: { height: 60, width: "100%", marginTop: 8 },
+  loginButtonLabel: { color: "#FFF" },
+  registerButton: { marginTop: 5 },
+});
