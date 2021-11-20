@@ -26,7 +26,6 @@ export function LoadInitial() {
       } else {
         navigate("profileConfig", { firstLogin: true });
       }
-
       setLoading(false);
     });
   };

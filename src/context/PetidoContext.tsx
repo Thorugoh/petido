@@ -12,25 +12,8 @@ import React, {
 } from "react";
 import { database } from "../config/firebaseconfig";
 import { useLocation } from "../hooks/useLocation";
+import { Pet } from "../types";
 import { getDistanceBetweenCoordinates } from "../utils/getDistanceBetweenCoordinates";
-export type PetSituation = "abandoned" | "lost" | "bruised";
-export type PetColor = "1" | "2" | "3";
-export type PetSize = "small" | "medium" | "large";
-
-export interface Pet {
-  id: string;
-  description: string;
-  situation: PetSituation;
-  colors: PetColor;
-  size: PetSize;
-  photo: string;
-  location: {
-    latitude: number;
-    longitude: number;
-  };
-  distance?: number;
-  user_id?: string;
-}
 
 interface PetidoContextData {
   loggedUser: any;
@@ -100,11 +83,21 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
 
   async function getLoggedUser() {
     const result = await AsyncStorage.getItem("@petido:user");
+    console.log({ result });
+
     if (result) {
       const user = JSON.parse(result);
       setLoggedUser(user);
+      return;
     }
+
+    setLoggedUser(undefined);
   }
+
+  useEffect(() => {
+    console.log("EFFECT LOGGED USER", loggedUser);
+
+  }, [loggedUser])
 
   useEffect(() => {
     getLoggedUser();

@@ -1,24 +1,26 @@
-import { useNavigation } from "@react-navigation/core";
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Image, Pressable } from "react-native";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
-import { Button, useTheme } from "react-native-paper";
-import { StaticMap } from "../../components/StaticMap";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-
 import {
   Pet,
   PetSituation,
-  usePetidoContext,
-} from "../../context/PetidoContext";
-import FoodIcon from "../../../resources/pet_food.svg";
+} from "../../types";
 import { DistanceDialog } from "../../components/DistanceDialog";
-import FastImage from "react-native-fast-image";
+import { usePetidoContext } from "../../context/PetidoContext";
+import { useTheme } from "react-native-paper";
+import { PetCard } from "../../components/PetCard";
 
 type MenuFilter = PetSituation | "all";
 
+const MENU_FILTER = [
+  { key: "all", title: "TODOS" },
+  { key: "lost", title: "PERDIDOS" },
+  { key: "abandoned", title: "ABANDONADOS" },
+  { key: "bruised", title: "MACHUCADOS" },
+];
+
 export function HomeScreen() {
-  const navigation = useNavigation();
   const {
     petsInDistance: pets,
     distanceFilter,
@@ -27,36 +29,11 @@ export function HomeScreen() {
     setOrderByDistance,
     rescuePet,
   } = usePetidoContext();
+
   const [filteredPets, setFilteredPets] = useState<Pet[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<MenuFilter>("all");
   const [showDialog, setShowDialog] = useState(false);
-  const [rescuePetLoading, setRescuePetLoading] = useState<string[]>([]);
   const { colors: themeColors } = useTheme();
-
-  const MENU_FILTER = [
-    { key: "all", title: "TODOS" },
-    { key: "lost", title: "PERDIDOS" },
-    { key: "abandoned", title: "ABANDONADOS" },
-    { key: "bruised", title: "MACHUCADOS" },
-  ];
-
-  const sizes = {
-    small: "Pequeno",
-    medium: "Médio",
-    large: "Grande",
-  };
-
-  const colors = {
-    "1": "1 cor",
-    "2": "2 cores",
-    "3": "3 cores",
-  };
-
-  const situation = {
-    abandoned: "Abandonado",
-    bruised: "Machucado",
-    lost: "Perdido",
-  };
 
   const renderTopMenuFilter = (menuItem: {
     key: MenuFilter;
@@ -90,10 +67,6 @@ export function HomeScreen() {
     );
   };
 
-  function openDetails(pet: Pet) {
-    navigation.navigate("petDetails", { pet: pet });
-  }
-
   function onDistanceFilterChange(distance: string) {
     setDistanceFilter(parseFloat(distance));
   }
@@ -102,86 +75,8 @@ export function HomeScreen() {
     setShowDialog(false);
   }
 
-  async function handleRescuePet(pet: Pet) {
-    setRescuePetLoading((current) => [...current, pet.id]);
-
-    await rescuePet(pet);
-
-    setRescuePetLoading((current) => current.filter((id) => id !== pet.id));
-  }
-
-  function isLoading(petId: string) {
-    return !!rescuePetLoading.find((id) => petId === id);
-  }
-
   const renderPet = (pet: Pet) => {
-    return (
-      <View>
-        <View
-          style={{
-            borderWidth: 1,
-            marginTop: 15,
-            borderColor: "#8d8d8d",
-          }}
-        >
-          <View style={{ height: 200 }}>
-            <FastImage
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-              source={{ uri: pet.photo }}
-            />
-          </View>
-          <StaticMap
-            style={{ width: "100%", height: 100, borderRadius: 10 }}
-            show
-            latitude={pet.location.latitude}
-            longitude={pet.location.longitude}
-          />
-        </View>
-        <View
-          style={{
-            flex: 1,
-            paddingTop: 6,
-            marginBottom: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <FoodIcon fill={themeColors.primary} />
-              <Text style={styles.dogInfo}>{`Porte ${sizes[
-                pet.size
-              ].toLowerCase()}`}</Text>
-            </View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <MaterialIcons
-                name="pets"
-                color={themeColors.primary}
-                size={17}
-              />
-              <Text style={styles.dogInfo}>{`Aparenta estar ${situation[
-                pet.situation
-              ].toLowerCase()}`}</Text>
-            </View>
-            <Text style={styles.dogDescription}>{pet.description}</Text>
-          </View>
-
-          <Button
-            disabled={isLoading(pet.id)}
-            loading={isLoading(pet.id)}
-            mode="contained"
-            onPress={() => handleRescuePet(pet)}
-            color={themeColors.secundary}
-          >
-            Resgatar
-          </Button>
-        </View>
-      </View>
-    );
+    return <PetCard pet={pet} />
   };
 
   useEffect(() => {
@@ -202,7 +97,7 @@ export function HomeScreen() {
   }
 
   return (
-    <View style={{ flex: 1, paddingHorizontal: 16 }}>
+    <View style={styles.container}>
       <View>
         <FlatList
           showsHorizontalScrollIndicator={false}
@@ -213,13 +108,7 @@ export function HomeScreen() {
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Pressable
-          style={{
-            maxWidth: 500,
-            marginBottom: 10,
-            alignSelf: "flex-end",
-            alignItems: "center",
-            flexDirection: "row",
-          }}
+          style={styles.buttonOrderBy}
           onPress={changeOrderBy}
         >
           <MaterialIcons
@@ -232,12 +121,7 @@ export function HomeScreen() {
           </Text>
         </Pressable>
         <Pressable
-          style={{
-            maxWidth: 500,
-            marginBottom: 10,
-            alignSelf: "flex-end",
-            alignItems: "center",
-          }}
+          style={styles.filterButton}
           onPress={() => setShowDialog(true)}
         >
           <Text style={{ fontWeight: "700", color: themeColors.secundary }}>
@@ -262,8 +146,26 @@ export function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+
+  container: {
+    flex: 1,
+    paddingHorizontal: 16
+  },
   dogDescription: {
     fontSize: 14,
+  },
+  filterButton: {
+    maxWidth: 500,
+    marginBottom: 10,
+    alignSelf: "flex-end",
+    alignItems: "center",
+  },
+  buttonOrderBy: {
+    maxWidth: 500,
+    marginBottom: 10,
+    alignSelf: "flex-end",
+    alignItems: "center",
+    flexDirection: "row",
   },
   dogInfo: {},
   menuTitles: {

@@ -13,6 +13,9 @@ const theme = {
     primary: "#F4A604",
     secundary: "#D43264",
   },
+  animation: {
+    scale: 0.2,
+  },
 };
 
 export default function App() {

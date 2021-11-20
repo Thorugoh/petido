@@ -40,13 +40,11 @@ export function SignIn() {
         const user = userCredential.user;
         await AsyncStorage.setItem("@petido:user", JSON.stringify(user));
         setLoggedUser(user);
-        // ...
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         Alert.alert("Erro", errorMessage);
-        // ..
       })
       .finally(() => {
         setLoading(false);
