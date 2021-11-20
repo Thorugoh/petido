@@ -120,7 +120,7 @@ export function MyProfile({ navigation }) {
               {currentInfos?.name || loggedUser.email}
             </Text>
             <Text>{`Pets Localizados: ${pets.length}`}</Text>
-            <Text>Pets Resgatados: 0</Text>
+            <Text>Pets Resgatados: {rescuedPets.length}</Text>
           </View>
         </View>
         <View
