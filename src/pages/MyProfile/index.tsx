@@ -5,7 +5,8 @@ import FastImage from "react-native-fast-image";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 import { database } from "../../config/firebaseconfig";
-import { Pet, usePetidoContext } from "../../context/PetidoContext";
+import { usePetidoContext } from "../../context/PetidoContext";
+import { Pet } from "../../types";
 
 const WIDTH = Dimensions.get("window").width;
 const PHOTO_BOX_SIZE = (WIDTH - 10) * 0.3333;
