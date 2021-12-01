@@ -34,8 +34,15 @@ interface PetidoProviderProps {
 
 const PetidoContext = createContext({} as PetidoContextData);
 
+type LoggedUser = {
+  uid: string;
+  email: string;
+  name: string;
+  photoUri: string;
+};
+
 const PetidoProvider = ({ children }: PetidoProviderProps) => {
-  const [loggedUser, setLoggedUser] = useState();
+  const [loggedUser, setLoggedUser] = useState<LoggedUser | null>();
   const [pets, setPets] = useState<Pet[]>([]);
   const [petsInDistance, setPetsInDistance] = useState<Pet[]>([]);
   const [distanceFilter, setDistanceFilter] = useState(3);
@@ -91,13 +98,8 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
       return;
     }
 
-    setLoggedUser(undefined);
+    setLoggedUser(null);
   }
-
-  useEffect(() => {
-    console.log("EFFECT LOGGED USER", loggedUser);
-
-  }, [loggedUser])
 
   useEffect(() => {
     getLoggedUser();
@@ -108,18 +110,20 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
       const databasePets = pet.val();
       const firebasePets = databasePets ?? {};
 
-      const parsedPets = Object.entries(firebasePets).map(([key, value]) => {
-        return {
-          id: key,
-          colors: value.colors,
-          description: value.description,
-          location: value.location,
-          photo: value.photo,
-          situation: value.situation,
-          size: value.size,
-          user_id: value.user_id,
-        };
-      });
+      const parsedPets = Object.entries<Pet>(firebasePets).map(
+        ([key, value]) => {
+          return {
+            id: key,
+            colors: value.colors,
+            description: value.description,
+            location: value.location,
+            photo: value.photo,
+            situation: value.situation,
+            size: value.size,
+            user_id: value.user_id,
+          };
+        }
+      );
 
       setPets(parsedPets);
     });
@@ -129,20 +133,31 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
     const petMarkedAsRescued = {
       ...pet,
       situation: "rescued",
-      rescuer_id: loggedUser.uid,
+      rescuer_id: loggedUser!.uid,
     };
 
     const userPetsRef = database.ref(`user_pets/${pet.user_id}/pets/${pet.id}`);
     await userPetsRef.update(petMarkedAsRescued);
 
     const userRescuedPetsRef = database.ref(
-      `user_pets/${loggedUser.uid}/rescued_pets/${pet.id}`
+      `user_pets/${loggedUser!.uid}/rescued_pets/${pet.id}`
     );
     await userRescuedPetsRef.set(petMarkedAsRescued);
 
     const petRef = database.ref(`pets/${pet.id}`);
     await petRef.remove();
   }
+
+  // function onAuthStateChanged(user) {
+  //   console.log("changed");
+
+  //   // if (initializing) setInitializing(false);
+  // }
+
+  // useEffect(() => {
+  //   const unsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
+  //   return unsubscribe(); // unsubscribe on unmount
+  // }, []);
 
   useEffect(() => {
     getAllRegisteredPets();
