@@ -28,51 +28,6 @@ export function Register() {
 
   const { colors } = useTheme();
 
-  const registerColorOptions = [
-    {
-      title: "1 cor",
-      key: "1",
-    },
-    {
-      title: "2 cor",
-      key: "2",
-    },
-    {
-      title: "3 cor",
-      key: "3",
-    },
-  ];
-
-  const registerSizeOptions = [
-    {
-      title: "Pequeno",
-      key: "small",
-    },
-    {
-      title: "Médio",
-      key: "medium",
-    },
-    {
-      title: "Grande",
-      key: "large",
-    },
-  ];
-
-  const registerSituationOptions = [
-    {
-      title: "Abandonado",
-      key: "abandoned",
-    },
-    {
-      title: "Perdido",
-      key: "lost",
-    },
-    {
-      title: "Machucado",
-      key: "bruised",
-    },
-  ];
-
   function handleSavePhoto(capturedPhoto: CameraCapturedPicture) {
     setPhoto(capturedPhoto);
   }
@@ -225,3 +180,48 @@ export function Register() {
     </TouchableWithoutFeedback>
   );
 }
+
+const registerColorOptions = [
+  {
+    title: "1 cor",
+    key: "1",
+  },
+  {
+    title: "2 cor",
+    key: "2",
+  },
+  {
+    title: "3 cor",
+    key: "3",
+  },
+];
+
+const registerSizeOptions = [
+  {
+    title: "Pequeno",
+    key: "small",
+  },
+  {
+    title: "Médio",
+    key: "medium",
+  },
+  {
+    title: "Grande",
+    key: "large",
+  },
+];
+
+const registerSituationOptions = [
+  {
+    title: "Abandonado",
+    key: "abandoned",
+  },
+  {
+    title: "Perdido",
+    key: "lost",
+  },
+  {
+    title: "Machucado",
+    key: "bruised",
+  },
+];

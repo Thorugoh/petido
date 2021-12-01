@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/core";
 import React, { useState } from "react";
-import { Alert, StyleSheet } from "react-native";
-import { Button, TextInput, useTheme } from "react-native-paper";
+import { Alert } from "react-native";
+import { Button, TextInput } from "react-native-paper";
 
 import PetidoeSvg from "../../../resources/petido.svg";
 import { auth } from "../../config/firebaseconfig";
@@ -11,7 +11,6 @@ import styled from "styled-components/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export function SignIn() {
-  const { colors } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -44,8 +43,24 @@ export function SignIn() {
       })
       .catch((error) => {
         const errorCode = error.code;
+        switch (errorCode) {
+          case "auth/invalid-email":
+            Alert.alert(
+              "O endereço de e-mail é inválido",
+              "Insira um endereço de e-mail válido para continuar."
+            );
+            break;
+          case "auth/weak-password":
+            Alert.alert(
+              "Senha fraca",
+              "Insira uma senha forte para continuar."
+            );
+          default:
+            return;
+        }
+
         const errorMessage = error.message;
-        Alert.alert("Erro", errorMessage);
+        // Alert.alert("Erro", errorMessage);
       })
       .finally(() => {
         setLoading(false);
@@ -77,7 +92,6 @@ export function SignIn() {
           disabled={loading}
           loading={loading}
           mode="contained"
-          labelStyle={styles.labelButton}
           onPress={handleSignInWithEmail}
         >
           Cadastrar
@@ -90,6 +104,8 @@ export function SignIn() {
 
 const Container = styled(KeyboardAwareScrollView).attrs(() => ({
   contentContainerStyle: {
+    paddingTop: 60,
+    paddingBottom: 60,
     backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
@@ -120,12 +136,10 @@ const InputPassword = styled(TextInput)`
   margin-top: 8px;
 `;
 
-const RegisterButton = styled(Button)`
+const RegisterButton = styled(Button).attrs(() => ({
+  labelStyle: { color: "#FFF" },
+}))`
   margin-top: 25px;
   width: 60%;
   color: #fff;
 `;
-
-const styles = StyleSheet.create({
-  labelButton: { color: "#FFF" },
-});

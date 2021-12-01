@@ -161,7 +161,7 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
 
   useEffect(() => {
     getAllRegisteredPets();
-  }, []);
+  }, [loggedUser]);
 
   useEffect(() => {
     const cleanStorage = async () => {

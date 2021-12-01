@@ -117,10 +117,12 @@ export function ProfileConfig({ route }: Props) {
 
     setName("");
     setUser("");
-
     if (firstLogin) {
       navigation.dispatch(StackActions.push("home"));
+      return;
     }
+
+    navigation.goBack();
   }
 
   const pickImage = async () => {

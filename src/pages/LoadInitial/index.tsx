@@ -14,7 +14,7 @@ export function LoadInitial() {
   const getCurrentInfos = async () => {
     setLoading(true);
     const userRef = database.ref(`users/${loggedUser.uid}`);
-    userRef.on("value", (user) => {
+    userRef.once("value", (user) => {
       const userConfig = user.val() ?? {};
       console.log({ userConfig });
 

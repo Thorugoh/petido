@@ -34,8 +34,24 @@ export function Login({ navigation }: LoginProps) {
       })
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
-        Alert.alert("Erro", errorMessage);
+
+        switch (errorCode) {
+          case "auth/invalid-email":
+            Alert.alert(
+              "O endereço de e-mail é inválido",
+              "Insira um endereço de e-mail válido para continuar."
+            );
+            break;
+          case "auth/user-not-found":
+            Alert.alert(
+              "Usuário Inválido",
+              "Insira um usuário válido para continuar."
+            );
+          case "auth/wrong-password":
+            Alert.alert("Senha Inválida", "A senha digitada está incorreta.");
+          default:
+            return;
+        }
       })
       .finally(() => {
         setLoading(false);
@@ -89,7 +105,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  innerContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+
+  innerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+  },
   title: { textAlign: "center", marginTop: 40, fontSize: 20 },
   inputContainer: { height: "40%", marginTop: 40 },
   emailPasswordInput: { height: 60, width: "100%" },
