@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { View } from "react-native";
 import { Button, Dialog, Portal, Text, TextInput } from "react-native-paper";
 
 interface Props {

@@ -7,8 +7,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import PetidoeSvg from "../../../resources/petido.svg";
 import { auth } from "../../config/firebaseconfig";
 import { usePetidoContext } from "../../context/PetidoContext";
+import { ScreenAuthProps } from "../../routes/app.auth.routes";
 
-export function Login({ navigation }) {
+type LoginProps = ScreenAuthProps<"login">;
+
+export function Login({ navigation }: LoginProps) {
   const { colors } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,7 +43,7 @@ export function Login({ navigation }) {
   }
 
   function handleGoToSignIn() {
-    navigation.navigate("SignIn");
+    navigation.navigate("signin");
   }
 
   return (

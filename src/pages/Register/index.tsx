@@ -3,12 +3,7 @@ import { RegisterOption } from "../../components/RegisterOption";
 import { Button, Title, useTheme, IconButton } from "react-native-paper";
 import { Alert, Image, Keyboard, View } from "react-native";
 import { CameraCapturedPicture } from "expo-camera";
-import {
-  Pet,
-  PetColor,
-  PetSituation,
-  PetSize,
-} from "../../context/PetidoContext";
+
 import { useLocation } from "../../hooks/useLocation";
 import { useNavigation } from "@react-navigation/core";
 import {
@@ -17,10 +12,9 @@ import {
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 import { useRegister } from "../../hooks/useRegister";
-import { finally } from "../../../metro.config";
+import { Pet, PetColor, PetSituation, PetSize } from "../../types";
 
 export function Register() {
-  // const [showCamera, setShowCamera] = useState(false);
   const navigation = useNavigation();
   const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState<CameraCapturedPicture | null>(null);
@@ -220,7 +214,7 @@ export function Register() {
         <Button
           loading={loading}
           disabled={loading}
-          color={colors.secundary}
+          color={colors.accent}
           labelStyle={{ color: "#FFF" }}
           mode="contained"
           onPress={handleRegisterPet}

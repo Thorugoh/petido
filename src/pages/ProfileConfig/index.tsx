@@ -17,6 +17,7 @@ import uuid from "react-native-uuid";
 
 import * as ImagePicker from "expo-image-picker";
 import { StackActions, useNavigation } from "@react-navigation/native";
+import { ScreenProps } from "../../routes/app.stack.routes";
 
 interface FieldProps {
   label: string;
@@ -42,12 +43,11 @@ function Field({ label, placeholder, value, setValue, style }: FieldProps) {
     </View>
   );
 }
-interface Props {
-  firstLogin?: boolean;
-}
 
-export function ProfileConfig({ route }) {
-  const { firstLogin } = route.params as Props;
+type Props = ScreenProps<"profileConfig">;
+
+export function ProfileConfig({ route }: Props) {
+  const { firstLogin } = route.params;
   const navigation = useNavigation();
 
   const { colors } = useTheme();
@@ -74,7 +74,7 @@ export function ProfileConfig({ route }) {
   }, []);
 
   const backAction = () => {
-    navigation.dispatch(StackActions.replace("home"));
+    navigation.navigate("home");
   };
 
   async function uploadImage() {
@@ -119,7 +119,7 @@ export function ProfileConfig({ route }) {
     setUser("");
 
     if (firstLogin) {
-      navigation.navigate("home");
+      navigation.dispatch(StackActions.push("home"));
     }
   }
 
@@ -128,7 +128,7 @@ export function ProfileConfig({ route }) {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
+        alert("Desculpe, precisamos das permissões de câmera!");
         return;
       }
     }
@@ -170,7 +170,7 @@ export function ProfileConfig({ route }) {
           />
         </View>
         <Pressable onPress={pickImage} style={{ marginTop: 8 }}>
-          <Text style={{ fontWeight: "700", color: colors.secundary }}>
+          <Text style={{ fontWeight: "700", color: colors.accent }}>
             Alterar foto de perfil
           </Text>
         </Pressable>

@@ -6,8 +6,18 @@ import { Register } from "../pages/Register";
 import { useTheme } from "react-native-paper";
 import { MyProfile } from "../pages/MyProfile";
 import AddIcon from "../../resources/add_pet.svg";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-const Tab = createBottomTabNavigator();
+export type TabsRouteParams = {
+  home: undefined;
+  profile: undefined;
+  register: undefined;
+};
+
+const Tab = createBottomTabNavigator<TabsRouteParams>();
+
+export type ScreenTabProps<RouteName extends keyof TabsRouteParams> =
+  NativeStackScreenProps<TabsRouteParams, RouteName>;
 
 export function AppTabRoutes() {
   const { colors } = useTheme();
@@ -18,27 +28,24 @@ export function AppTabRoutes() {
         tabBarActiveTintColor: colors.primary,
         tabBarHideOnKeyboard: true,
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === "Home") {
+          let iconName: "home" | "person" | undefined = undefined;
+          if (route.name === "home") {
             iconName = "home";
           }
-          if (route.name === "Map") {
-            iconName = "map";
-          }
-          if (route.name === "Registrar") {
+          if (route.name === "register") {
             // iconName = "add";
             return <AddIcon width={size} height={size} fill={color} />;
           }
-          if (route.name === "Profile") {
+          if (route.name === "profile") {
             iconName = "person";
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Registrar" component={Register} />
-      <Tab.Screen name="Profile" component={MyProfile} />
+      <Tab.Screen name="home" component={HomeScreen} />
+      <Tab.Screen name="register" component={Register} />
+      <Tab.Screen name="profile" component={MyProfile} />
     </Tab.Navigator>
   );
 }

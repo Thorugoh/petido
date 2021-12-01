@@ -8,10 +8,12 @@ import { Routes } from "./routes/index";
 
 const theme = {
   ...DefaultTheme,
+  myOwnPoperty: true,
   colors: {
     ...DefaultTheme.colors,
     primary: "#F4A604",
-    secundary: "#D43264",
+    accent: "#D43264",
+    backgroundColor: "#FFF",
   },
   animation: {
     scale: 0.2,

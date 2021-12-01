@@ -1,4 +1,4 @@
-import { useFocusEffect } from "@react-navigation/core";
+import { useFocusEffect, useNavigation } from "@react-navigation/core";
 import React, { useState, useCallback, useEffect } from "react";
 import { Dimensions, Pressable, View } from "react-native";
 import FastImage from "react-native-fast-image";
@@ -12,7 +12,8 @@ const WIDTH = Dimensions.get("window").width;
 const PHOTO_BOX_SIZE = (WIDTH - 10) * 0.3333;
 const SPACE_BETWEEN = 10 / 4;
 
-export function MyProfile({ navigation }) {
+export function MyProfile() {
+  const navigation = useNavigation();
   const { colors } = useTheme();
   const { loggedUser } = usePetidoContext();
   const [pets, setPets] = useState<Pet[]>([]);
@@ -40,17 +41,19 @@ export function MyProfile({ navigation }) {
         const databasePets = pet.val();
         const firebasePets = databasePets ?? {};
 
-        const parsedPets = Object.entries(firebasePets).map(([key, value]) => {
-          return {
-            id: key,
-            colors: value.colors,
-            description: value.description,
-            location: value.location,
-            photo: value.photo,
-            situation: value.situation,
-            size: value.size,
-          };
-        });
+        const parsedPets = Object.entries<Pet>(firebasePets).map(
+          ([key, value]) => {
+            return {
+              id: key,
+              colors: value.colors,
+              description: value.description,
+              location: value.location,
+              photo: value.photo,
+              situation: value.situation,
+              size: value.size,
+            };
+          }
+        );
 
         setRescuedPets(parsedPets);
       });
@@ -61,17 +64,19 @@ export function MyProfile({ navigation }) {
       const databasePets = pet.val();
       const firebasePets = databasePets ?? {};
 
-      const parsedPets = Object.entries(firebasePets).map(([key, value]) => {
-        return {
-          id: key,
-          colors: value.colors,
-          description: value.description,
-          location: value.location,
-          photo: value.photo,
-          situation: value.situation,
-          size: value.size,
-        };
-      });
+      const parsedPets = Object.entries<Pet>(firebasePets).map(
+        ([key, value]) => {
+          return {
+            id: key,
+            colors: value.colors,
+            description: value.description,
+            location: value.location,
+            photo: value.photo,
+            situation: value.situation,
+            size: value.size,
+          };
+        }
+      );
 
       setPets(parsedPets);
     });
@@ -132,7 +137,7 @@ export function MyProfile({ navigation }) {
             alignItems: "center",
             marginBottom: 10,
             borderRadius: 5,
-            backgroundColor: colors.secundary,
+            backgroundColor: colors.accent,
           }}
         >
           <Pressable onPress={handleEditPerfil}>
@@ -151,9 +156,7 @@ export function MyProfile({ navigation }) {
                 fontWeight:
                   selectedMenu === "registeredPets" ? "700" : undefined,
                 color:
-                  selectedMenu === "registeredPets"
-                    ? colors.secundary
-                    : "#4D4D4D",
+                  selectedMenu === "registeredPets" ? colors.accent : "#4D4D4D",
               }}
             >
               Postados
@@ -168,7 +171,7 @@ export function MyProfile({ navigation }) {
                 fontSize: 16,
                 fontWeight: selectedMenu === "rescuedPets" ? "700" : undefined,
                 color:
-                  selectedMenu === "rescuedPets" ? colors.secundary : "#4D4D4D",
+                  selectedMenu === "rescuedPets" ? colors.accent : "#4D4D4D",
               }}
             >
               Resgatados

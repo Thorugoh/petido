@@ -1,8 +1,11 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { Image } from "react-native";
 import { Appbar, IconButton } from "react-native-paper";
+import { ScreenDrawerProps } from "../routes/app.drawer.routes";
 
-export function NavBar({ navigation }) {
+type Props = ScreenDrawerProps<"tabs">;
+
+export function NavBar({ navigation }: Props) {
   return (
     <Appbar.Header
       style={{

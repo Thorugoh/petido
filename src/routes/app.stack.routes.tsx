@@ -1,27 +1,45 @@
 import React from "react";
 import { Camera } from "../components/Camera";
-import { AppDrawerRoutes } from "./app.drawer.routes";
+import { AppDrawerRoutes, DrawerRouteParams } from "./app.drawer.routes";
 
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createNativeStackNavigator,
+  NativeStackScreenProps,
+} from "@react-navigation/native-stack";
 import { CameraCapturedPicture } from "expo-camera";
 import { PetDetails } from "../pages/PetDetails";
-import { Pet } from "../context/PetidoContext";
 import { ProfileConfig } from "../pages/ProfileConfig";
 import { LoadInitial } from "../pages/LoadInitial";
+import { Pet } from "../types";
+import {
+  CompositeScreenProps,
+  NavigatorScreenParams,
+} from "@react-navigation/core";
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { StackScreenProps } from "@react-navigation/stack";
 
-type StackRouteParams = {
-  home: undefined;
+export type StackRouteParams = {
+  home: NavigatorScreenParams<DrawerRouteParams>;
   camera: { save: (capturedPhoto: CameraCapturedPicture) => void };
   petDetails: { pet: Pet };
-  profileConfig: undefined;
+  profileConfig: { firstLogin: boolean };
   initial: undefined;
 };
 
-const { Navigator, Screen } = createStackNavigator<StackRouteParams>();
+// export type ScreenProps<RouteName extends keyof StackRouteParams> =
+//   NativeStackScreenProps<StackRouteParams, RouteName>;
+
+export type ScreenProps<RouteName extends keyof StackRouteParams> =
+  CompositeScreenProps<
+    StackScreenProps<StackRouteParams, RouteName>,
+    DrawerScreenProps<DrawerRouteParams>
+  >;
+
+const { Navigator, Screen } = createNativeStackNavigator<StackRouteParams>();
 
 export function AppStackRoutes() {
   return (
-    <Navigator headerMode="none">
+    <Navigator screenOptions={{ headerShown: false }}>
       <Screen
         name="initial"
         component={LoadInitial}

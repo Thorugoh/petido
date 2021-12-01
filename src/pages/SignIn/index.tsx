@@ -1,13 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/core";
 import React, { useState } from "react";
-import { Alert, View, StyleSheet } from "react-native";
-import { Button, Text, TextInput, useTheme } from "react-native-paper";
+import { Alert, StyleSheet } from "react-native";
+import { Button, TextInput, useTheme } from "react-native-paper";
 
 import PetidoeSvg from "../../../resources/petido.svg";
 import { auth } from "../../config/firebaseconfig";
 import { usePetidoContext } from "../../context/PetidoContext";
 import styled from "styled-components/native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export function SignIn() {
   const { colors } = useTheme();
@@ -52,7 +53,7 @@ export function SignIn() {
   }
 
   function handleGoToLogin() {
-    navigation.navigate("Login");
+    navigation.navigate("login");
   }
 
   return (
@@ -87,12 +88,13 @@ export function SignIn() {
   );
 }
 
-const Container = styled.View`
-  flex: 1;
-  background-color: #fff;
-  align-items: center;
-  justify-content: center;
-`;
+const Container = styled(KeyboardAwareScrollView).attrs(() => ({
+  contentContainerStyle: {
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+}))``;
 
 const Title = styled.Text`
   text-align: center;
@@ -101,7 +103,8 @@ const Title = styled.Text`
 `;
 
 const InputContainer = styled.View`
-  height: 40%;
+  flex: 1;
+  height: 100%;
   width: 80%;
   align-items: center;
 `;
@@ -124,15 +127,5 @@ const RegisterButton = styled(Button)`
 `;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  title: { textAlign: "center", marginTop: 40, fontSize: 20 },
-  inputsContainer: { height: "40%", width: "80%", alignItems: "center" },
-  inputEmail: { height: 60, width: "100%" },
-  inputPassword: { height: 60, width: "100%", marginTop: 8 },
-  registerButton: { marginTop: 15, width: "40%" },
   labelButton: { color: "#FFF" },
 });

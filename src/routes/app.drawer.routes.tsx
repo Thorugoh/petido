@@ -1,15 +1,29 @@
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { AppTabRoutes } from "./app.tab.routes";
+import {
+  createDrawerNavigator,
+  DrawerScreenProps,
+} from "@react-navigation/drawer";
+import { AppTabRoutes, TabsRouteParams } from "./app.tab.routes";
 import { Drawer } from "../components/Drawer";
 import { NavBar } from "../components/Navbar";
 
 import React from "react";
 
-const { Navigator, Screen } = createDrawerNavigator();
+export type DrawerRouteParams = {
+  tabs?: TabsRouteParams;
+};
+
+export type ScreenDrawerProps<RouteName extends keyof DrawerRouteParams> =
+  DrawerScreenProps<DrawerRouteParams, RouteName>;
+
+const { Navigator, Screen } = createDrawerNavigator<DrawerRouteParams>();
+
+function renderDrawer() {
+  return <Drawer />;
+}
 
 export function AppDrawerRoutes() {
   return (
-    <Navigator drawerContent={(props) => <Drawer {...props} />}>
+    <Navigator initialRouteName="tabs" drawerContent={renderDrawer}>
       <Screen
         name="tabs"
         component={AppTabRoutes}

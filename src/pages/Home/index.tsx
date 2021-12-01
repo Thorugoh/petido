@@ -2,10 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import {
-  Pet,
-  PetSituation,
-} from "../../types";
+import { Pet, PetSituation } from "../../types";
 import { DistanceDialog } from "../../components/DistanceDialog";
 import { usePetidoContext } from "../../context/PetidoContext";
 import { useTheme } from "react-native-paper";
@@ -27,7 +24,6 @@ export function HomeScreen() {
     setDistanceFilter,
     orderByDistance,
     setOrderByDistance,
-    rescuePet,
   } = usePetidoContext();
 
   const [filteredPets, setFilteredPets] = useState<Pet[]>([]);
@@ -76,7 +72,7 @@ export function HomeScreen() {
   }
 
   const renderPet = (pet: Pet) => {
-    return <PetCard pet={pet} />
+    return <PetCard pet={pet} />;
   };
 
   useEffect(() => {
@@ -107,16 +103,13 @@ export function HomeScreen() {
         />
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Pressable
-          style={styles.buttonOrderBy}
-          onPress={changeOrderBy}
-        >
+        <Pressable style={styles.buttonOrderBy} onPress={changeOrderBy}>
           <MaterialIcons
             size={20}
             name="swap-vert"
-            color={themeColors.secundary}
+            color={themeColors.accent}
           />
-          <Text style={{ fontWeight: "700", color: themeColors.secundary }}>
+          <Text style={{ fontWeight: "700", color: themeColors.accent }}>
             {orderByDistance === "highest" ? `Mais distantes` : "Mais próximos"}
           </Text>
         </Pressable>
@@ -124,7 +117,7 @@ export function HomeScreen() {
           style={styles.filterButton}
           onPress={() => setShowDialog(true)}
         >
-          <Text style={{ fontWeight: "700", color: themeColors.secundary }}>
+          <Text style={{ fontWeight: "700", color: themeColors.accent }}>
             {`Filtro de distância: ${distanceFilter}km`}
           </Text>
         </Pressable>
@@ -146,10 +139,9 @@ export function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   dogDescription: {
     fontSize: 14,

@@ -10,16 +10,15 @@ import { Camera as ExpoCamera, CameraCapturedPicture } from "expo-camera";
 
 import { CapturedPicture } from "expo-camera/build/Camera.types";
 import { useNavigation } from "@react-navigation/core";
+import { ScreenProps } from "../routes/app.stack.routes";
 
-interface Props {
-  save: (capturedPhoto: CameraCapturedPicture) => void;
-}
+type Props = ScreenProps<"camera">;
 
-function Camera({ route }) {
-  const { save } = route.params as Props;
+function Camera({ route }: Props) {
+  const { save } = route.params;
   const navigation = useNavigation();
 
-  const [hasPermission, setHasPermission] = useState(null);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [type, setType] = useState(ExpoCamera.Constants.Type.back);
   const [photo, setPhoto] = useState<CameraCapturedPicture>();
   const camRef = useRef<ExpoCamera>();

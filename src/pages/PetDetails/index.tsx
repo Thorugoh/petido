@@ -1,17 +1,14 @@
 import React from "react";
 import { Image, View } from "react-native";
-import { Text, Appbar } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Text } from "react-native-paper";
 import { Header } from "../../components/Header";
 import { StaticMap } from "../../components/StaticMap";
-import { Pet } from "../../context/PetidoContext";
+import { ScreenProps } from "../../routes/app.stack.routes";
 
-interface Props {
-  pet: Pet;
-}
+type Props = ScreenProps<"petDetails">;
 
-export function PetDetails({ route }) {
-  const { pet } = route.params as Props;
+export function PetDetails({ route }: Props) {
+  const { pet } = route.params;
   return (
     <>
       <Header title="Detalhes" />
@@ -33,7 +30,6 @@ export function PetDetails({ route }) {
           longitude={pet.location.longitude}
         />
         <View>
-          <Text style={{}}>{pet.color}</Text>
           <Text style={{}}>{pet.size}</Text>
           <Text style={{}}>{pet.situation}</Text>
         </View>
