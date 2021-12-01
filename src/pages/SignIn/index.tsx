@@ -58,9 +58,6 @@ export function SignIn() {
           default:
             return;
         }
-
-        const errorMessage = error.message;
-        // Alert.alert("Erro", errorMessage);
       })
       .finally(() => {
         setLoading(false);
