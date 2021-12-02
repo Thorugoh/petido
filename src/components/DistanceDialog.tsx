@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Dialog, Portal, Text, TextInput } from "react-native-paper";
+import { RFValue } from "react-native-responsive-fontsize";
 
 interface Props {
   onDismiss?: () => void;
@@ -27,15 +28,22 @@ export function DistanceDialog({ onDismiss, onConfirm }: Props) {
     <Portal>
       <Dialog visible={true} onDismiss={onDismiss}>
         <Dialog.Content>
-          <Text>Digite a distância maxima para o filtro em km</Text>
+          <Text style={{ fontSize: RFValue(14) }}>
+            Digite a distância maxima para o filtro em km
+          </Text>
           <TextInput
             keyboardType="numeric"
             value={distance}
             onChangeText={handleOnTextChange}
-            style={{ marginTop: 10 }}
+            style={{ marginTop: RFValue(10), fontSize: RFValue(14) }}
           />
           <Dialog.Actions>
-            <Button onPress={handleConfirm}>Confirmar</Button>
+            <Button
+              labelStyle={{ fontSize: RFValue(14) }}
+              onPress={handleConfirm}
+            >
+              Confirmar
+            </Button>
           </Dialog.Actions>
         </Dialog.Content>
       </Dialog>

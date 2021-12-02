@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Text, RadioButton, useTheme } from "react-native-paper";
+import { RFValue } from "react-native-responsive-fontsize";
 
 interface Props {
   title: string;
@@ -21,8 +22,10 @@ export function RegisterOption({
   const { colors } = useTheme();
 
   return (
-    <View style={{ ...styles.container, marginTop: 16 }}>
-      <Text style={{ marginBottom: 4 }}>{title}</Text>
+    <View style={{ ...styles.container, marginTop: RFValue(16) }}>
+      <Text style={{ fontSize: RFValue(14), marginBottom: RFValue(4) }}>
+        {title}
+      </Text>
 
       <RadioButton.Group
         onValueChange={(nextValue) => {
@@ -38,7 +41,7 @@ export function RegisterOption({
               style={{ alignItems: "center", flexDirection: "row" }}
             >
               <RadioButton color={colors.primary} value={option.key} />
-              <Text>{option.title}</Text>
+              <Text style={{ fontSize: RFValue(14) }}>{option.title}</Text>
             </View>
           ))}
         </View>
@@ -49,9 +52,9 @@ export function RegisterOption({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 8,
+    padding: RFValue(8),
     borderColor: "#d8d8d8",
-    borderWidth: 1,
-    borderRadius: 5,
+    borderWidth: RFValue(1),
+    borderRadius: RFValue(5),
   },
 });

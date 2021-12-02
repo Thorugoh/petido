@@ -13,6 +13,7 @@ import {
 } from "react-native-gesture-handler";
 import { useRegister } from "../../hooks/useRegister";
 import { Pet, PetColor, PetSituation, PetSize } from "../../types";
+import { RFValue } from "react-native-responsive-fontsize";
 
 export function Register() {
   const navigation = useNavigation();
@@ -91,11 +92,11 @@ export function Register() {
   return (
     <TouchableWithoutFeedback
       onPress={Keyboard.dismiss}
-      containerStyle={{ flex: 1, paddingHorizontal: 16 }}
+      containerStyle={{ flex: 1, paddingHorizontal: RFValue(16) }}
     >
       <ScrollView>
         <Title style={{ color: colors.primary }}>Registrar</Title>
-        <View style={{ marginBottom: 40 }}>
+        <View style={{ marginBottom: RFValue(40) }}>
           <RegisterOption
             getSelected={setSize as (opt: string) => void}
             title="Porte:"
@@ -118,15 +119,15 @@ export function Register() {
               flex: 1,
               flexDirection: "row",
               alignItems: "center",
-              marginTop: 10,
+              marginTop: RFValue(10),
             }}
           >
             <View
               style={{
                 borderWidth: !photo ? 1 : undefined,
                 borderColor: colors.primary,
-                width: 60,
-                height: 60,
+                width: RFValue(60),
+                height: RFValue(60),
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 5,
@@ -136,13 +137,17 @@ export function Register() {
               {!photo ? (
                 <IconButton
                   icon="camera"
-                  size={40}
+                  size={RFValue(40)}
                   onPress={showCamera}
                   color={colors.primary}
                 />
               ) : (
                 <Image
-                  style={{ height: "100%", width: "100%", borderRadius: 5 }}
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    borderRadius: RFValue(5),
+                  }}
                   source={{ uri: photo.uri }}
                 />
               )}
@@ -154,13 +159,14 @@ export function Register() {
               multiline
               placeholder="Adicione uma breve descrição"
               style={{
+                fontSize: RFValue(14),
                 borderColor: "#d8d8d8",
                 borderWidth: 1,
-                borderRadius: 5,
-                height: 80,
+                borderRadius: RFValue(5),
+                height: RFValue(80),
                 width: "82%",
-                paddingLeft: 5,
-                maxHeight: 80,
+                paddingLeft: RFValue(5),
+                maxHeight: RFValue(80),
               }}
             />
           </View>

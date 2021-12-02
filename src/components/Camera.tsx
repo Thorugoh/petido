@@ -11,6 +11,7 @@ import { Camera as ExpoCamera, CameraCapturedPicture } from "expo-camera";
 import { CapturedPicture } from "expo-camera/build/Camera.types";
 import { useNavigation } from "@react-navigation/core";
 import { ScreenProps } from "../routes/app.stack.routes";
+import { RFValue } from "react-native-responsive-fontsize";
 
 type Props = ScreenProps<"camera">;
 
@@ -63,7 +64,7 @@ function Camera({ route }: Props) {
   if (hasPermission === false) {
     return (
       <View>
-        <Text>No access to camera</Text>;
+        <Text style={{ fontSize: RFValue(14) }}>No access to camera</Text>;
       </View>
     );
   }
@@ -129,14 +130,14 @@ function PhotoView({ photo, savePhoto, discardPhoto }: PhotoViewProps) {
         source={{ uri: photo.uri }}
       >
         <TouchableOpacity
-          style={{ alignSelf: "flex-end", margin: 25 }}
+          style={{ alignSelf: "flex-end", margin: RFValue(25) }}
           onPress={() => savePhoto(photo)}
         >
           <Text style={styles.text}>Salvar</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={{ alignSelf: "flex-end", margin: 25 }}
+          style={{ alignSelf: "flex-end", margin: RFValue(25) }}
           onPress={discardPhoto}
         >
           <Text style={styles.text}>Descartar</Text>
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "transparent",
     flexDirection: "row",
-    margin: 20,
+    margin: RFValue(20),
     justifyContent: "space-between",
   },
   button: {
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    fontSize: 18,
+    fontSize: RFValue(18),
     color: "white",
   },
 });

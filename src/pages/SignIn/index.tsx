@@ -3,12 +3,11 @@ import { useNavigation } from "@react-navigation/core";
 import React, { useState } from "react";
 import { Alert, KeyboardAvoidingView } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-
+import { RFValue } from "react-native-responsive-fontsize";
 import PetidoeSvg from "../../../resources/petido.svg";
 import { auth } from "../../config/firebaseconfig";
 import { usePetidoContext } from "../../context/PetidoContext";
 import styled from "styled-components/native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
@@ -69,10 +68,12 @@ export function SignIn() {
   }
 
   return (
-    <Container behavior="padding">
+    <Container behavior="height">
       <InputContainer>
-        <PetidoeSvg width={200} height={75} />
-        <Title>{`Cadastre-se e faça parte de \numa rede do bem`}</Title>
+        <PetidoeSvg width={RFValue(200)} height={RFValue(75)} />
+        <Title
+          style={{ fontSize: RFValue(16), marginBottom: RFValue(8) }}
+        >{`Cadastre-se e faça parte de \numa rede do bem`}</Title>
         <InputEmail label="Email:" onChangeText={setEmail} />
         <InputPassword
           label="Senha:"
@@ -92,7 +93,12 @@ export function SignIn() {
         >
           Cadastrar
         </RegisterButton>
-        <Button onPress={handleGoToLogin}>Já possuo uma conta, Entrar!</Button>
+        <Button
+          labelStyle={{ fontSize: RFValue(15) }}
+          onPress={handleGoToLogin}
+        >
+          Já possuo uma conta, Entrar!
+        </Button>
       </InputContainer>
     </Container>
   );
@@ -111,8 +117,8 @@ const Container = styled(KeyboardAvoidingView).attrs(() => ({
 
 const Title = styled.Text`
   text-align: center;
-  margin-top: 40px;
-  font-size: 20px;
+  margin-top: ${RFValue(40)}px;
+  font-size: ${RFValue(20)}px;
 `;
 
 const InputContainer = styled.View`
@@ -121,20 +127,22 @@ const InputContainer = styled.View`
 `;
 
 const InputEmail = styled(TextInput)`
-  height: 60px;
+  height: ${RFValue(60)}px;
+  font-size: ${RFValue(14)}px;
   width: 100%;
 `;
 
 const InputPassword = styled(TextInput)`
-  height: 60px;
+  height: ${RFValue(60)}px;
   width: 100%;
-  margin-top: 8px;
+  margin-top: ${RFValue(8)}px;
+  font-size: ${RFValue(14)}px;
 `;
 
 const RegisterButton = styled(Button).attrs(() => ({
-  labelStyle: { color: "#FFF" },
+  labelStyle: { color: "#FFF", fontSize: RFValue(15) },
 }))`
-  margin-top: 25px;
+  margin-top: ${RFValue(25)}px;
   width: 60%;
   color: #fff;
 `;

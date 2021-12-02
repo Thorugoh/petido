@@ -18,6 +18,7 @@ import uuid from "react-native-uuid";
 import * as ImagePicker from "expo-image-picker";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import { ScreenProps } from "../../routes/app.stack.routes";
+import { RFValue } from "react-native-responsive-fontsize";
 
 interface FieldProps {
   label: string;
@@ -31,12 +32,19 @@ function Field({ label, placeholder, value, setValue, style }: FieldProps) {
   return (
     <View style={[style, { flexDirection: "column" }]}>
       <View style={{ width: "15%" }}>
-        <Text style={{ fontWeight: "700" }}>{label}</Text>
+        <Text style={{ fontSize: RFValue(14), fontWeight: "700" }}>
+          {label}
+        </Text>
       </View>
 
       <TextInput
         value={value}
-        style={{ width: "100%", borderBottomWidth: 1, borderColor: "#8d8d8d" }}
+        style={{
+          width: "100%",
+          borderBottomWidth: 1,
+          borderColor: "#8d8d8d",
+          fontSize: RFValue(14),
+        }}
         placeholder={placeholder}
         onChangeText={setValue}
       />
@@ -160,25 +168,31 @@ export function ProfileConfig({ route }: Props) {
       <View style={{ alignItems: "center" }}>
         <View
           style={{
-            height: 70,
-            width: 70,
+            height: RFValue(70),
+            width: RFValue(70),
             backgroundColor: colors.primary,
-            borderRadius: 35,
+            borderRadius: RFValue(35),
           }}
         >
           <Image
-            style={{ width: "100%", height: "100%", borderRadius: 35 }}
+            style={{ width: "100%", height: "100%", borderRadius: RFValue(35) }}
             source={{ uri: image || currentInfos?.photo || undefined }}
           />
         </View>
-        <Pressable onPress={pickImage} style={{ marginTop: 8 }}>
-          <Text style={{ fontWeight: "700", color: colors.accent }}>
+        <Pressable onPress={pickImage} style={{ marginTop: RFValue(8) }}>
+          <Text
+            style={{
+              fontWeight: "700",
+              fontSize: RFValue(14),
+              color: colors.accent,
+            }}
+          >
             Alterar foto de perfil
           </Text>
         </Pressable>
       </View>
 
-      <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
+      <View style={{ paddingHorizontal: RFValue(16), marginTop: RFValue(16) }}>
         <Field
           setValue={setName}
           label="Nome"
@@ -187,7 +201,7 @@ export function ProfileConfig({ route }: Props) {
         <Field
           setValue={setUser}
           label="Usuário"
-          style={{ marginTop: 16 }}
+          style={{ marginTop: RFValue(16) }}
           placeholder={currentInfos?.username || ""}
         />
       </View>

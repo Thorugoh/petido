@@ -1,3 +1,4 @@
+import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
 
 export const Container = styled.View`
@@ -7,13 +8,13 @@ export const Container = styled.View`
 export const Title = styled.Text`
   font-weight: 700;
   color: #f7bf29;
-  font-size: 30px;
+  font-size: ${RFValue(30)}px;
 `;
 
 export const Card = styled.View`
   border-width: 1px;
   width: "100%";
-  height: 50px;
+  height: ${RFValue(50)}px;
 `;
 
 export const CardTitle = styled.Text``;

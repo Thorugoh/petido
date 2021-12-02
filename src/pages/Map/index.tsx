@@ -1,10 +1,11 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    height: 200,
+    height: RFValue(200),
     width: "100%",
     justifyContent: "flex-end",
     alignItems: "center",
@@ -15,9 +16,5 @@ const styles = StyleSheet.create({
 });
 
 export function Map() {
-  return (
-    <View style={styles.container}>
-      
-    </View>
-  );
+  return <View style={styles.container}></View>;
 }

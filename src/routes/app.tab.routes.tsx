@@ -7,6 +7,7 @@ import { useTheme } from "react-native-paper";
 import { MyProfile } from "../pages/MyProfile";
 import AddIcon from "../../resources/add_pet.svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RFValue } from "react-native-responsive-fontsize";
 
 export type TabsRouteParams = {
   home: undefined;
@@ -34,12 +35,20 @@ export function AppTabRoutes() {
           }
           if (route.name === "register") {
             // iconName = "add";
-            return <AddIcon width={size} height={size} fill={color} />;
+            return (
+              <AddIcon
+                width={RFValue(size)}
+                height={RFValue(size)}
+                fill={color}
+              />
+            );
           }
           if (route.name === "profile") {
             iconName = "person";
           }
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return (
+            <Ionicons name={iconName} size={RFValue(size)} color={color} />
+          );
         },
       })}
     >

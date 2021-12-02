@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
 import { Alert, View, KeyboardAvoidingView, StyleSheet } from "react-native";
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
+import { RFValue } from "react-native-responsive-fontsize";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import PetidoeSvg from "../../../resources/petido.svg";
@@ -66,11 +67,11 @@ export function Login({ navigation }: LoginProps) {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <SafeAreaView />
       <View style={styles.innerContainer}>
-        <PetidoeSvg width={200} height={75} />
+        <PetidoeSvg width={RFValue(200)} height={RFValue(75)} />
         <Text style={styles.title}>{`Realize seu login\n`}</Text>
 
         <View style={styles.inputContainer}>
-          <KeyboardAvoidingView style={{ flex: 1, width: 250 }}>
+          <KeyboardAvoidingView style={{ flex: 1, width: RFValue(250) }}>
             <TextInput
               label="Email:"
               style={styles.emailPasswordInput}
@@ -93,7 +94,11 @@ export function Login({ navigation }: LoginProps) {
         >
           Entrar
         </Button>
-        <Button style={styles.registerButton} onPress={handleGoToSignIn}>
+        <Button
+          labelStyle={{ fontSize: RFValue(15) }}
+          style={styles.registerButton}
+          onPress={handleGoToSignIn}
+        >
           Quero me cadastrar!
         </Button>
       </View>
@@ -112,10 +117,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FFF",
   },
-  title: { textAlign: "center", marginTop: 40, fontSize: 20 },
-  inputContainer: { height: "40%", marginTop: 40 },
-  emailPasswordInput: { height: 60, width: "100%" },
-  passwordInput: { height: 60, width: "100%", marginTop: 8 },
-  loginButtonLabel: { color: "#FFF" },
-  registerButton: { marginTop: 5 },
+  title: { textAlign: "center", marginTop: RFValue(40), fontSize: RFValue(20) },
+  inputContainer: { height: "40%", marginTop: RFValue(40) },
+  emailPasswordInput: {
+    height: RFValue(60),
+    width: "100%",
+    fontSize: RFValue(14),
+  },
+  passwordInput: {
+    height: RFValue(60),
+    width: "100%",
+    marginTop: RFValue(8),
+    fontSize: RFValue(14),
+  },
+  loginButtonLabel: { color: "#FFF", fontSize: RFValue(15) },
+  registerButton: { marginTop: RFValue(5) },
 });

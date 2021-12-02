@@ -4,6 +4,7 @@ import { Dimensions, Pressable, View } from "react-native";
 import FastImage from "react-native-fast-image";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
+import { RFValue } from "react-native-responsive-fontsize";
 import { database } from "../../config/firebaseconfig";
 import { usePetidoContext } from "../../context/PetidoContext";
 import { Pet } from "../../types";
@@ -102,57 +103,68 @@ export function MyProfile() {
       <>
         <View
           style={{
-            padding: 10,
+            padding: RFValue(10),
             flexDirection: "row",
             alignItems: "center",
           }}
         >
           <View
             style={{
-              height: 70,
-              width: 70,
+              height: RFValue(70),
+              width: RFValue(70),
               backgroundColor: colors.primary,
-              borderRadius: 35,
+              borderRadius: RFValue(35),
             }}
           >
             <FastImage
-              style={{ width: "100%", height: "100%", borderRadius: 35 }}
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: RFValue(35),
+              }}
               source={{ uri: currentInfos?.photo }}
             />
           </View>
-          <View style={{ marginLeft: 8 }}>
-            <Text style={{ fontWeight: "700" }}>
+          <View style={{ marginLeft: RFValue(8) }}>
+            <Text style={{ fontWeight: "700", fontSize: RFValue(14) }}>
               {currentInfos?.name || loggedUser.email}
             </Text>
-            <Text>{`Pets Localizados: ${pets.length}`}</Text>
-            <Text>Pets Resgatados: {rescuedPets.length}</Text>
+            <Text style={{ fontSize: RFValue(14) }}>
+              {" "}
+              {`Pets Localizados: ${pets.length}`}
+            </Text>
+            <Text style={{ fontSize: RFValue(14) }}>
+              Pets Resgatados: {rescuedPets.length}
+            </Text>
           </View>
         </View>
         <View
           style={{
-            marginLeft: 5,
-            width: 90,
-            padding: 3,
+            marginLeft: RFValue(5),
+            width: RFValue(90),
+            padding: RFValue(3),
             justifyContent: "center",
             alignItems: "center",
-            marginBottom: 10,
-            borderRadius: 5,
+            marginBottom: RFValue(10),
+            borderRadius: RFValue(5),
             backgroundColor: colors.accent,
           }}
         >
           <Pressable onPress={handleEditPerfil}>
-            <Text style={{ color: "#FFF" }}>Edit Profile</Text>
+            <Text style={{ color: "#FFF", fontSize: RFValue(14) }}>
+              Edit Profile
+            </Text>
           </Pressable>
         </View>
 
         <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
           <TouchableOpacity
             onPress={() => setSelectedMenu("registeredPets")}
-            style={{ marginRight: 8, marginBottom: 15 }}
+            style={{ marginRight: RFValue(8), marginBottom: RFValue(15) }}
           >
             <Text
               style={{
-                fontSize: 16,
+                fontSize: RFValue(16),
                 fontWeight:
                   selectedMenu === "registeredPets" ? "700" : undefined,
                 color:
@@ -164,11 +176,11 @@ export function MyProfile() {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setSelectedMenu("rescuedPets")}
-            style={{ marginRight: 8, paddingBottom: 15 }}
+            style={{ marginRight: RFValue(8), paddingBottom: RFValue(15) }}
           >
             <Text
               style={{
-                fontSize: 16,
+                fontSize: RFValue(16),
                 fontWeight: selectedMenu === "rescuedPets" ? "700" : undefined,
                 color:
                   selectedMenu === "rescuedPets" ? colors.accent : "#4D4D4D",

@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/core";
 import React, { useState } from "react";
 import { View } from "react-native";
 import { ActivityIndicator, Appbar, IconButton } from "react-native-paper";
+import { RFValue } from "react-native-responsive-fontsize";
 interface Props {
   title: string;
   onPressConfirm?: () => Promise<void>;
@@ -33,7 +34,7 @@ export function Header({
 
       <Appbar.Content
         title={title}
-        titleStyle={{ color: "#333", fontSize: 16, fontWeight: "500" }}
+        titleStyle={{ color: "#333", fontSize: RFValue(16), fontWeight: "500" }}
       />
       {onPressConfirm &&
         (!loading ? (
@@ -43,7 +44,7 @@ export function Header({
             onPress={handleOnPressConfirm}
           />
         ) : (
-          <View style={{ marginRight: 10 }}>
+          <View style={{ marginRight: RFValue(10) }}>
             <ActivityIndicator size="small" color={"#06D"} />
           </View>
         ))}

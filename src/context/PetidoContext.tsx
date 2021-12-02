@@ -90,7 +90,6 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
 
   async function getLoggedUser() {
     const result = await AsyncStorage.getItem("@petido:user");
-    console.log({ result });
 
     if (result) {
       const user = JSON.parse(result);

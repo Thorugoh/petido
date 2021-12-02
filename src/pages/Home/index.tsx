@@ -7,6 +7,7 @@ import { DistanceDialog } from "../../components/DistanceDialog";
 import { usePetidoContext } from "../../context/PetidoContext";
 import { useTheme } from "react-native-paper";
 import { PetCard } from "../../components/PetCard";
+import { RFValue } from "react-native-responsive-fontsize";
 
 type MenuFilter = PetSituation | "all";
 
@@ -45,6 +46,7 @@ export function HomeScreen() {
             ...styles.menuTitles,
             fontWeight: menuItem.key === selectedFilter ? "bold" : "normal",
             color: themeColors.primary,
+            fontSize: RFValue(16),
           }}
         >
           {menuItem.title}
@@ -53,7 +55,7 @@ export function HomeScreen() {
         {menuItem.key === selectedFilter && (
           <View
             style={{
-              height: 3,
+              height: RFValue(3),
               width: "100%",
               backgroundColor: themeColors.primary,
             }}
@@ -105,11 +107,17 @@ export function HomeScreen() {
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Pressable style={styles.buttonOrderBy} onPress={changeOrderBy}>
           <MaterialIcons
-            size={20}
+            size={RFValue(20)}
             name="swap-vert"
             color={themeColors.accent}
           />
-          <Text style={{ fontWeight: "700", color: themeColors.accent }}>
+          <Text
+            style={{
+              fontWeight: "700",
+              color: themeColors.accent,
+              fontSize: RFValue(14),
+            }}
+          >
             {orderByDistance === "highest" ? `Mais distantes` : "Mais próximos"}
           </Text>
         </Pressable>
@@ -117,7 +125,13 @@ export function HomeScreen() {
           style={styles.filterButton}
           onPress={() => setShowDialog(true)}
         >
-          <Text style={{ fontWeight: "700", color: themeColors.accent }}>
+          <Text
+            style={{
+              fontWeight: "700",
+              fontSize: RFValue(14),
+              color: themeColors.accent,
+            }}
+          >
             {`Filtro de distância: ${distanceFilter}km`}
           </Text>
         </Pressable>
@@ -141,26 +155,26 @@ export function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: RFValue(16),
   },
   dogDescription: {
-    fontSize: 14,
+    fontSize: RFValue(14),
   },
   filterButton: {
-    maxWidth: 500,
-    marginBottom: 10,
+    maxWidth: RFValue(500),
+    marginBottom: RFValue(10),
     alignSelf: "flex-end",
     alignItems: "center",
   },
   buttonOrderBy: {
-    maxWidth: 500,
-    marginBottom: 10,
+    maxWidth: RFValue(500),
+    marginBottom: RFValue(10),
     alignSelf: "flex-end",
     alignItems: "center",
     flexDirection: "row",
   },
   dogInfo: {},
   menuTitles: {
-    fontSize: 18,
+    fontSize: RFValue(18),
   },
 });
