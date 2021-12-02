@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/core";
 import React, { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, KeyboardAvoidingView } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 
 import PetidoeSvg from "../../../resources/petido.svg";
@@ -69,11 +69,10 @@ export function SignIn() {
   }
 
   return (
-    <Container>
-      <PetidoeSvg width={200} height={75} />
-      <Title>{`Cadastre-se e faça parte de \numa rede do bem`}</Title>
-
+    <Container behavior="padding">
       <InputContainer>
+        <PetidoeSvg width={200} height={75} />
+        <Title>{`Cadastre-se e faça parte de \numa rede do bem`}</Title>
         <InputEmail label="Email:" onChangeText={setEmail} />
         <InputPassword
           label="Senha:"
@@ -99,15 +98,16 @@ export function SignIn() {
   );
 }
 
-const Container = styled(KeyboardAwareScrollView).attrs(() => ({
+const Container = styled(KeyboardAvoidingView).attrs(() => ({
   contentContainerStyle: {
-    paddingTop: 60,
-    paddingBottom: 60,
     backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
   },
-}))``;
+}))`
+  flex: 1;
+  background-color: #fff;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Title = styled.Text`
   text-align: center;
@@ -116,8 +116,6 @@ const Title = styled.Text`
 `;
 
 const InputContainer = styled.View`
-  flex: 1;
-  height: 100%;
   width: 80%;
   align-items: center;
 `;
