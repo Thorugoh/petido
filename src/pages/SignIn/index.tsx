@@ -54,6 +54,11 @@ export function SignIn() {
               "Senha fraca",
               "Insira uma senha forte para continuar."
             );
+          case "auth/email-already-in-use":
+            Alert.alert(
+              "E-mail já está em uso",
+              "Este e-mail já está em uso, tente realizar login com o mesmo ou cadastre um novo e-mail."
+            );
           default:
             return;
         }
