@@ -135,9 +135,6 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
       rescuer_id: loggedUser!.uid,
     };
 
-    const userPetsRef = database.ref(`user_pets/${pet.user_id}/pets/${pet.id}`);
-    await userPetsRef.update(petMarkedAsRescued);
-
     const userRescuedPetsRef = database.ref(
       `user_pets/${loggedUser!.uid}/rescued_pets/${pet.id}`
     );
@@ -146,17 +143,6 @@ const PetidoProvider = ({ children }: PetidoProviderProps) => {
     const petRef = database.ref(`pets/${pet.id}`);
     await petRef.remove();
   }
-
-  // function onAuthStateChanged(user) {
-  //   console.log("changed");
-
-  //   // if (initializing) setInitializing(false);
-  // }
-
-  // useEffect(() => {
-  //   const unsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
-  //   return unsubscribe(); // unsubscribe on unmount
-  // }, []);
 
   useEffect(() => {
     getAllRegisteredPets();
